@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>骨骼与关节健康评估</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+      background: #FFF5EE;
+      color: #333;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    .header {
+      position: relative;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .header-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 28%;
+    }
+
+    .header-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 35%),
+        linear-gradient(to top, rgba(150,45,20,0.82) 0%, transparent 55%);
+    }
+
+    .header-content {
+      position: relative;
+      padding: 28px 16px 22px;
+    }
+
+    .header-period {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .header-subtitle {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 6px;
+    }
+
+    .header-caption {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── 体检报告 Banner ── */
+    .exam-banner {
+      margin: 12px 12px 0;
+      background: #EBF4FB;
+      border: 1.5px solid #C2DDF0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .exam-banner-icon { font-size: 26px; flex-shrink: 0; }
+
+    .exam-banner-text {
+      font-size: 14px;
+      color: #2B6A9B;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    /* ── Sections ── */
+    .section {
+      background: white;
+      margin: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+
+    .section-header {
+      background: #FAF0EC;
+      padding: 13px 16px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #AD5540;
+      border-bottom: 1px solid #F0DDD8;
+    }
+
+    .section-body { padding: 16px; }
+
+    .section-note {
+      font-size: 12px;
+      color: #B0A09A;
+      margin-bottom: 14px;
+    }
+
+    .field { margin-bottom: 20px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label.field-label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    /* ── Text/Number/Month/Select inputs ── */
+    input[type="text"],
+    input[type="number"],
+    input[type="month"],
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 9px;
+      font-size: 16px;
+      font-family: inherit;
+      color: #333;
+      background: #FAFAFA;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #D4735B;
+      background: white;
+    }
+
+    /* ── Radio chips (single-select) ── */
+    .radio-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .radio-card { position: relative; }
+
+    .radio-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-card .radio-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #777;
+      background: #FAFAFA;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .radio-card input:checked + .radio-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #C05040;
+    }
+
+    /* ── Checkbox chips (multi-select) ── */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-item { position: relative; }
+
+    .chip-item input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .chip-item .chip-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #777;
+      background: #FAFAFA;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .chip-item input:checked + .chip-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #C05040;
+    }
+
+    /* ── Conditional sub-cards ── */
+    .sub-card-wrapper {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.25s ease;
+    }
+
+    .sub-card-wrapper.open {
+      max-height: 3000px;
+      opacity: 1;
+    }
+
+    .sub-card {
+      margin-top: 8px;
+      background: #FFF8F6;
+      border-left: 3px solid #D4735B;
+      border-radius: 0 10px 10px 0;
+      padding: 14px;
+    }
+
+    .sub-card .field { margin-bottom: 14px; }
+    .sub-card .field:last-child { margin-bottom: 0; }
+
+    .sub-card label.field-label {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .sub-card .radio-label,
+    .sub-card .chip-label {
+      font-size: 13px;
+      padding: 8px 13px;
+    }
+
+    .sub-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #AD5540;
+      margin-bottom: 10px;
+    }
+
+    /* ── Food frequency grid ── */
+    .food-grid { width: 100%; }
+
+    .food-grid-header {
+      display: flex;
+      align-items: center;
+      padding: 0 0 6px;
+      gap: 8px;
+      border-bottom: 1.5px solid #F0DDD8;
+      margin-bottom: 4px;
+    }
+
+    .food-grid-header .food-name-col {
+      flex: 0 0 90px;
+      min-width: 90px;
+      font-size: 11px;
+      color: #BBB;
+    }
+
+    .food-grid-header .freq-cols {
+      display: flex;
+      flex: 1;
+      gap: 5px;
+    }
+
+    .food-grid-header .freq-col-label {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      color: #AD5540;
+      font-weight: 600;
+    }
+
+    .food-grid-row {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #F5EDEA;
+      gap: 8px;
+    }
+
+    .food-grid-row:last-child { border-bottom: none; }
+
+    .food-name {
+      font-size: 13px;
+      color: #555;
+      flex: 0 0 90px;
+      min-width: 90px;
+      line-height: 1.3;
+    }
+
+    .food-freqs {
+      display: flex;
+      flex: 1;
+      gap: 5px;
+    }
+
+    .food-freq-item {
+      position: relative;
+      flex: 1;
+    }
+
+    .food-freq-item input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .food-freq-item .freq-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      color: #888;
+      background: #FAFAFA;
+      text-align: center;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .food-freq-item input:checked + .freq-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #C05040;
+    }
+
+    @media (max-width: 360px) {
+      .food-grid-row { flex-direction: column; align-items: flex-start; }
+      .food-name { flex: none; min-width: unset; margin-bottom: 4px; }
+      .food-freqs { width: 100%; }
+      .food-grid-header { display: none; }
+    }
+
+    /* ── Medication rows ── */
+    .med-list { margin-bottom: 8px; }
+
+    .med-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .med-row .med-name {
+      flex: 1;
+      font-size: 15px;
+      padding: 11px 12px;
+    }
+
+    .med-row .med-freq {
+      width: 90px;
+      flex-shrink: 0;
+      font-size: 14px;
+      padding: 11px 8px;
+    }
+
+    .med-row .med-note {
+      width: 90px;
+      flex-shrink: 0;
+      font-size: 13px;
+      padding: 11px 10px;
+    }
+
+    .btn-remove-med {
+      background: none;
+      border: none;
+      color: #CCC;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0 4px;
+      flex-shrink: 0;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-add-med {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border: 1.5px dashed #D4735B;
+      border-radius: 9px;
+      background: transparent;
+      color: #D4735B;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-add-med:disabled {
+      border-color: #DDD;
+      color: #CCC;
+      cursor: default;
+    }
+
+    /* ── 小贴士 ── */
+    .tips-section {
+      margin: 12px;
+      background: #FFF8E7;
+      border: 1.5px solid #F0DEB0;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tips-icon { font-size: 24px; flex-shrink: 0; }
+
+    .tips-text {
+      font-size: 14px;
+      color: #7A5A00;
+      line-height: 1.55;
+    }
+
+    /* ── Copy + Clear ── */
+    .copy-section { padding: 12px 12px 0; }
+
+    .btn-copy {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      background: #D4735B;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 1px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-copy:active { background: #BA5A43; }
+
+    .copy-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #BBB;
+      margin-top: 10px;
+    }
+
+    .btn-clear {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 18px 12px calc(36px + env(safe-area-inset-bottom, 0px));
+      font-size: 12px;
+      color: #CCC;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.72);
+      color: white;
+      padding: 11px 24px;
+      border-radius: 22px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <img class="header-photo" src="family-photo-2018.jpg" alt="全家福">
+  <div class="header-overlay"></div>
+  <div class="header-content">
+    <div class="header-period">第 2 期 · 2026年6月</div>
+    <h1>骨骼与关节健康评估</h1>
+    <p class="header-subtitle">不知道的可以跳过，不用全部填完</p>
+  </div>
+  <span class="header-caption">2018 · 港珠澳大桥</span>
+</div>
+
+<!-- 体检报告 Banner -->
+<div class="exam-banner">
+  <span class="exam-banner-icon">📸</span>
+  <span class="exam-banner-text">填表之前，先把最近的体检报告拍照发给宸宸哦</span>
+</div>
+
+
+<!-- ═══ Section A: 骨密度检查历史 ═══ -->
+<div class="section">
+  <div class="section-header">① 骨密度检查历史</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">你做过骨密度检查吗？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="dexa-yes" name="dexa_done" value="做过"
+                 data-expands="sub-dexa-details" onchange="handleRadioExpand(this, 'dexa_done')">
+          <label for="dexa-yes" class="radio-label">做过</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="dexa-no" name="dexa_done" value="没做过"
+                 data-expands="" onchange="handleRadioExpand(this, 'dexa_done')">
+          <label for="dexa-no" class="radio-label">没做过</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="dexa-forget" name="dexa_done" value="不记得"
+                 data-expands="" onchange="handleRadioExpand(this, 'dexa_done')">
+          <label for="dexa-forget" class="radio-label">不记得</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-dexa-details" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="field">
+          <label class="field-label">大概什么时候做的？</label>
+          <input type="month" name="dexa_date" id="dexa-date">
+        </div>
+        <div class="field">
+          <label class="field-label">医生怎么说的？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="dexa-r-normal" name="dexa_result" value="正常">
+              <label for="dexa-r-normal" class="radio-label">正常</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="dexa-r-low" name="dexa_result" value="偏低">
+              <label for="dexa-r-low" class="radio-label">偏低</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="dexa-r-osteo" name="dexa_result" value="骨质疏松">
+              <label for="dexa-r-osteo" class="radio-label">骨质疏松</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="dexa-r-forget" name="dexa_result" value="不记得了">
+              <label for="dexa-r-forget" class="radio-label">不记得了</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">有没有开药或建议吃钙片？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="dexa-t-med" name="dexa_treatment" value="有开药">
+              <label for="dexa-t-med" class="radio-label">有开药</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="dexa-t-calcium" name="dexa_treatment" value="建议吃钙片">
+              <label for="dexa-t-calcium" class="radio-label">建议吃钙片</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="dexa-t-nothing" name="dexa_treatment" value="什么都没说">
+              <label for="dexa-t-nothing" class="radio-label">什么都没说</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="dexa-t-forget" name="dexa_treatment" value="不记得">
+              <label for="dexa-t-forget" class="radio-label">不记得</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section B: 钙摄入行为 ═══ -->
+<div class="section">
+  <div class="section-header">② 钙摄入行为</div>
+  <div class="section-body">
+    <p class="section-note">这些含钙食物你每周大概吃几次？</p>
+
+    <div class="food-grid">
+      <div class="food-grid-header">
+        <span class="food-name-col"></span>
+        <div class="freq-cols">
+          <span class="freq-col-label">不吃</span>
+          <span class="freq-col-label">1-2次</span>
+          <span class="freq-col-label">3-5次</span>
+          <span class="freq-col-label">几乎每天</span>
+        </div>
+      </div>
+
+      <div class="food-grid-row">
+        <span class="food-name">豆腐/豆干/豆皮</span>
+        <div class="food-freqs">
+          <div class="food-freq-item"><input type="radio" id="fg-tofu-0" name="food_tofu" value="不吃"><label for="fg-tofu-0" class="freq-label">不吃</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-tofu-1" name="food_tofu" value="1-2次"><label for="fg-tofu-1" class="freq-label">1-2次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-tofu-2" name="food_tofu" value="3-5次"><label for="fg-tofu-2" class="freq-label">3-5次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-tofu-3" name="food_tofu" value="几乎每天"><label for="fg-tofu-3" class="freq-label">几乎每天</label></div>
+        </div>
+      </div>
+
+      <div class="food-grid-row">
+        <span class="food-name">虾皮/小鱼干</span>
+        <div class="food-freqs">
+          <div class="food-freq-item"><input type="radio" id="fg-shrimp-0" name="food_shrimp" value="不吃"><label for="fg-shrimp-0" class="freq-label">不吃</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-shrimp-1" name="food_shrimp" value="1-2次"><label for="fg-shrimp-1" class="freq-label">1-2次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-shrimp-2" name="food_shrimp" value="3-5次"><label for="fg-shrimp-2" class="freq-label">3-5次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-shrimp-3" name="food_shrimp" value="几乎每天"><label for="fg-shrimp-3" class="freq-label">几乎每天</label></div>
+        </div>
+      </div>
+
+      <div class="food-grid-row">
+        <span class="food-name">芝麻/芝麻酱</span>
+        <div class="food-freqs">
+          <div class="food-freq-item"><input type="radio" id="fg-sesame-0" name="food_sesame" value="不吃"><label for="fg-sesame-0" class="freq-label">不吃</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-sesame-1" name="food_sesame" value="1-2次"><label for="fg-sesame-1" class="freq-label">1-2次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-sesame-2" name="food_sesame" value="3-5次"><label for="fg-sesame-2" class="freq-label">3-5次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-sesame-3" name="food_sesame" value="几乎每天"><label for="fg-sesame-3" class="freq-label">几乎每天</label></div>
+        </div>
+      </div>
+
+      <div class="food-grid-row">
+        <span class="food-name">深绿色蔬菜<br><small style="color:#aaa">菠菜/油菜/小白菜</small></span>
+        <div class="food-freqs">
+          <div class="food-freq-item"><input type="radio" id="fg-greens-0" name="food_dark_greens" value="不吃"><label for="fg-greens-0" class="freq-label">不吃</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-greens-1" name="food_dark_greens" value="1-2次"><label for="fg-greens-1" class="freq-label">1-2次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-greens-2" name="food_dark_greens" value="3-5次"><label for="fg-greens-2" class="freq-label">3-5次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-greens-3" name="food_dark_greens" value="几乎每天"><label for="fg-greens-3" class="freq-label">几乎每天</label></div>
+        </div>
+      </div>
+
+      <div class="food-grid-row">
+        <span class="food-name">酸奶/奶酪</span>
+        <div class="food-freqs">
+          <div class="food-freq-item"><input type="radio" id="fg-yogurt-0" name="food_yogurt" value="不吃"><label for="fg-yogurt-0" class="freq-label">不吃</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-yogurt-1" name="food_yogurt" value="1-2次"><label for="fg-yogurt-1" class="freq-label">1-2次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-yogurt-2" name="food_yogurt" value="3-5次"><label for="fg-yogurt-2" class="freq-label">3-5次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-yogurt-3" name="food_yogurt" value="几乎每天"><label for="fg-yogurt-3" class="freq-label">几乎每天</label></div>
+        </div>
+      </div>
+
+      <div class="food-grid-row">
+        <span class="food-name">海带/紫菜</span>
+        <div class="food-freqs">
+          <div class="food-freq-item"><input type="radio" id="fg-seaweed-0" name="food_seaweed" value="不吃"><label for="fg-seaweed-0" class="freq-label">不吃</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-seaweed-1" name="food_seaweed" value="1-2次"><label for="fg-seaweed-1" class="freq-label">1-2次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-seaweed-2" name="food_seaweed" value="3-5次"><label for="fg-seaweed-2" class="freq-label">3-5次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-seaweed-3" name="food_seaweed" value="几乎每天"><label for="fg-seaweed-3" class="freq-label">几乎每天</label></div>
+        </div>
+      </div>
+
+      <div class="food-grid-row">
+        <span class="food-name">黑木耳</span>
+        <div class="food-freqs">
+          <div class="food-freq-item"><input type="radio" id="fg-fungus-0" name="food_fungus" value="不吃"><label for="fg-fungus-0" class="freq-label">不吃</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-fungus-1" name="food_fungus" value="1-2次"><label for="fg-fungus-1" class="freq-label">1-2次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-fungus-2" name="food_fungus" value="3-5次"><label for="fg-fungus-2" class="freq-label">3-5次</label></div>
+          <div class="food-freq-item"><input type="radio" id="fg-fungus-3" name="food_fungus" value="几乎每天"><label for="fg-fungus-3" class="freq-label">几乎每天</label></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top: 20px;">
+      <label class="field-label">你有没有在吃补钙的药或保健品？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="calcium-yes" name="calcium_supplement" value="有"
+                 data-expands="sub-calcium-meds" onchange="handleRadioExpand(this, 'calcium_supplement')">
+          <label for="calcium-yes" class="radio-label">有</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="calcium-no" name="calcium_supplement" value="没有"
+                 data-expands="" onchange="handleRadioExpand(this, 'calcium_supplement')">
+          <label for="calcium-no" class="radio-label">没有</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-calcium-meds" class="sub-card-wrapper">
+      <div class="sub-card">
+        <p class="section-note">每种一行，不记得名字可以描述外观</p>
+        <div class="med-list" id="calcium-med-list" data-max="8" data-add-btn="calcium-add-btn"
+             data-prefix="calcium_med" data-ph-name="钙片/保健品名" data-ph-note="每次多少">
+          <div class="med-row">
+            <input type="text" class="med-name" placeholder="钙片/保健品名" name="calcium_med_0_name">
+            <select class="med-freq" name="calcium_med_0_freq">
+              <option value="">频率</option>
+              <option value="每天">每天</option>
+              <option value="每周">每周</option>
+              <option value="需要时">需要时</option>
+              <option value="已停用">已停用</option>
+            </select>
+            <input type="text" class="med-note" placeholder="每次多少" name="calcium_med_0_note">
+          </div>
+        </div>
+        <button class="btn-add-med" id="calcium-add-btn"
+                onclick="addMedRow('calcium-med-list')">+ 再加一种</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section C: 维生素D与日照 ═══ -->
+<div class="section">
+  <div class="section-header">③ 维生素D与日照</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">你平时每天在外面晒到太阳大概多久？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="sun-d-none" name="sun_duration" value="几乎不出门">
+          <label for="sun-d-none" class="radio-label">几乎不出门</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="sun-d-30" name="sun_duration" value="半小时以内">
+          <label for="sun-d-30" class="radio-label">半小时以内</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="sun-d-60" name="sun_duration" value="半小时到1小时">
+          <label for="sun-d-60" class="radio-label">半小时到1小时</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="sun-d-more" name="sun_duration" value="1小时以上">
+          <label for="sun-d-more" class="radio-label">1小时以上</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">一般什么时候在外面？（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="sun-t-0" name="sun_time" value="早上9点前">
+          <label for="sun-t-0" class="chip-label">早上9点前</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sun-t-1" name="sun_time" value="上午9-11点">
+          <label for="sun-t-1" class="chip-label">上午9-11点</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sun-t-2" name="sun_time" value="中午11-2点">
+          <label for="sun-t-2" class="chip-label">中午11-2点</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sun-t-3" name="sun_time" value="下午2点后">
+          <label for="sun-t-3" class="chip-label">下午2点后</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">出门会涂防晒霜或打伞吗？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="sun-p-always" name="sun_protection" value="总是">
+          <label for="sun-p-always" class="radio-label">总是</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="sun-p-sometimes" name="sun_protection" value="有时候">
+          <label for="sun-p-sometimes" class="radio-label">有时候</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="sun-p-rarely" name="sun_protection" value="很少">
+          <label for="sun-p-rarely" class="radio-label">很少</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">有没有在吃维生素D的保健品？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="vitd-yes" name="vitamin_d_supplement" value="有">
+          <label for="vitd-yes" class="radio-label">有</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="vitd-no" name="vitamin_d_supplement" value="没有">
+          <label for="vitd-no" class="radio-label">没有</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="vitd-unsure" name="vitamin_d_supplement" value="不知道有没有含">
+          <label for="vitd-unsure" class="radio-label">不知道有没有含</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section D: 关节酸痛详情 ═══ -->
+<div class="section">
+  <div class="section-header">④ 关节酸痛详情</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">哪里痛？（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="pain-knee" name="pain_locations" value="膝盖"
+                 data-expands="sub-pain-knee" onchange="handleChipExpand(this)">
+          <label for="pain-knee" class="chip-label">膝盖</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="pain-back" name="pain_locations" value="腰背"
+                 data-expands="sub-pain-back" onchange="handleChipExpand(this)">
+          <label for="pain-back" class="chip-label">腰背</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="pain-finger" name="pain_locations" value="手指关节"
+                 data-expands="sub-pain-finger" onchange="handleChipExpand(this)">
+          <label for="pain-finger" class="chip-label">手指关节</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="pain-shoulder" name="pain_locations" value="肩膀"
+                 data-expands="sub-pain-shoulder" onchange="handleChipExpand(this)">
+          <label for="pain-shoulder" class="chip-label">肩膀</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="pain-hip" name="pain_locations" value="髋部"
+                 data-expands="sub-pain-hip" onchange="handleChipExpand(this)">
+          <label for="pain-hip" class="chip-label">髋部</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="pain-ankle" name="pain_locations" value="脚踝"
+                 data-expands="sub-pain-ankle" onchange="handleChipExpand(this)">
+          <label for="pain-ankle" class="chip-label">脚踝</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="pain-neck" name="pain_locations" value="颈椎"
+                 data-expands="sub-pain-neck" onchange="handleChipExpand(this)">
+          <label for="pain-neck" class="chip-label">颈椎</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-location sub-cards generated by JS -->
+    <div id="pain-sub-cards"></div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section E: 就医与用药 ═══ -->
+<div class="section">
+  <div class="section-header">⑤ 就医与用药</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">有没有因为骨头或关节问题去看过医生？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="bone-doc-yes" name="bone_doctor_visit" value="有"
+                 data-expands="sub-bone-doctor" onchange="handleRadioExpand(this, 'bone_doctor_visit')">
+          <label for="bone-doc-yes" class="radio-label">有</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bone-doc-no" name="bone_doctor_visit" value="没有"
+                 data-expands="" onchange="handleRadioExpand(this, 'bone_doctor_visit')">
+          <label for="bone-doc-no" class="radio-label">没有</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-bone-doctor" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="field">
+          <label class="field-label">大概什么时候去的？</label>
+          <input type="month" name="bone_visit_date" id="bone-visit-date">
+        </div>
+        <div class="field">
+          <label class="field-label">医生怎么说？（可多选）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="bone-diag-0" name="bone_diagnosis" value="骨质疏松">
+              <label for="bone-diag-0" class="chip-label">骨质疏松</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="bone-diag-1" name="bone_diagnosis" value="关节炎">
+              <label for="bone-diag-1" class="chip-label">关节炎</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="bone-diag-2" name="bone_diagnosis" value="缺钙">
+              <label for="bone-diag-2" class="chip-label">缺钙</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="bone-diag-3" name="bone_diagnosis" value="正常老化">
+              <label for="bone-diag-3" class="chip-label">正常老化</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="bone-diag-4" name="bone_diagnosis" value="其他">
+              <label for="bone-diag-4" class="chip-label">其他</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">开了什么药？</label>
+          <p class="section-note">每种药一行，不记得名字可以描述外观</p>
+          <div class="med-list" id="bone-med-list" data-max="8" data-add-btn="bone-add-btn"
+               data-prefix="bone_med" data-ph-name="药名" data-ph-note="备注">
+            <div class="med-row">
+              <input type="text" class="med-name" placeholder="药名" name="bone_med_0_name">
+              <select class="med-freq" name="bone_med_0_freq">
+                <option value="">频率</option>
+                <option value="每天">每天</option>
+                <option value="每周">每周</option>
+                <option value="需要时">需要时</option>
+                <option value="已停用">已停用</option>
+              </select>
+              <input type="text" class="med-note" placeholder="备注" name="bone_med_0_note">
+            </div>
+          </div>
+          <button class="btn-add-med" id="bone-add-btn"
+                  onclick="addMedRow('bone-med-list')">+ 再加一种药</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">有没有自己买过关节或骨头方面的保健品？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="bone-supp-yes" name="bone_supplement" value="有"
+                 data-expands="sub-bone-supplement" onchange="handleRadioExpand(this, 'bone_supplement')">
+          <label for="bone-supp-yes" class="radio-label">有</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bone-supp-no" name="bone_supplement" value="没有"
+                 data-expands="" onchange="handleRadioExpand(this, 'bone_supplement')">
+          <label for="bone-supp-no" class="radio-label">没有</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-bone-supplement" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="med-list" id="bone-supp-list" data-max="8" data-add-btn="bone-supp-add-btn"
+             data-prefix="bone_supp" data-ph-name="保健品名" data-has-note="false">
+          <div class="med-row">
+            <input type="text" class="med-name" placeholder="保健品名" name="bone_supp_0_name">
+            <select class="med-freq" name="bone_supp_0_freq">
+              <option value="">频率</option>
+              <option value="每天">每天</option>
+              <option value="每周">每周</option>
+              <option value="需要时">需要时</option>
+              <option value="已停用">已停用</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-add-med" id="bone-supp-add-btn"
+                onclick="addMedRow('bone-supp-list')">+ 再加一种保健品</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section F: 烹饪关联 ═══ -->
+<div class="section">
+  <div class="section-header">⑥ 烹饪关联</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">你炒菜一般放多少盐？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="salt-little" name="salt_amount" value="很少放">
+          <label for="salt-little" class="radio-label">很少放</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="salt-normal" name="salt_amount" value="正常">
+          <label for="salt-normal" class="radio-label">正常</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="salt-more" name="salt_amount" value="偏多">
+          <label for="salt-more" class="radio-label">偏多</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="salt-lots" name="salt_amount" value="很多，家里人都说咸">
+          <label for="salt-lots" class="radio-label">很多，家里人都说咸</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">除了炒菜的盐，还经常用这些调料吗？（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="condiment-0" name="extra_condiments" value="豆瓣酱">
+          <label for="condiment-0" class="chip-label">豆瓣酱</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="condiment-1" name="extra_condiments" value="老干妈">
+          <label for="condiment-1" class="chip-label">老干妈</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="condiment-2" name="extra_condiments" value="榨菜/腌菜">
+          <label for="condiment-2" class="chip-label">榨菜/腌菜</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="condiment-3" name="extra_condiments" value="酱油">
+          <label for="condiment-3" class="chip-label">酱油</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="condiment-4" name="extra_condiments" value="味精/鸡精">
+          <label for="condiment-4" class="chip-label">味精/鸡精</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="condiment-5" name="extra_condiments" value="都不怎么用">
+          <label for="condiment-5" class="chip-label">都不怎么用</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- 小贴士 -->
+<div class="tips-section">
+  <span class="tips-icon">🌱</span>
+  <span class="tips-text">不喝牛奶也能补钙哦！豆腐、虾皮、芝麻酱都是很好的钙来源，每天吃一点就有帮助 💪</span>
+</div>
+
+<!-- Copy -->
+<div class="copy-section">
+  <button class="btn-copy" onclick="copyResults()">复制结果，发给宸宸</button>
+  <p class="copy-hint">点击后自动复制，粘贴到微信发给宸宸就好</p>
+</div>
+
+<button class="btn-clear" onclick="clearForm()">清除已填内容</button>
+
+<div class="toast" id="toast">已复制！粘贴到微信发给宸宸</div>
+
+<script>
+// ─── Form constants ──────────────────────────────────────
+const FORM_ID = 'mom-bone-density-002';
+const FORM_PERSON = 'mom';
+
+// ─── Pain sub-card generation ────────────────────────────
+const PAIN_LOCATIONS = [
+  { key: 'knee', label: '膝盖' },
+  { key: 'back', label: '腰背' },
+  { key: 'finger', label: '手指关节' },
+  { key: 'shoulder', label: '肩膀' },
+  { key: 'hip', label: '髋部' },
+  { key: 'ankle', label: '脚踝' },
+  { key: 'neck', label: '颈椎' },
+];
+
+function initPainSubCards() {
+  var container = document.getElementById('pain-sub-cards');
+
+  function radioGroup(loc, nameField, options) {
+    return options.map(function(opt, i) {
+      var val = typeof opt === 'string' ? opt : opt.value;
+      var lbl = typeof opt === 'string' ? opt : opt.label;
+      return '<div class="radio-card">' +
+        '<input type="radio" id="' + loc.key + '-' + nameField + '-' + i + '" name="' + loc.key + '_' + nameField + '" value="' + val + '">' +
+        '<label for="' + loc.key + '-' + nameField + '-' + i + '" class="radio-label">' + lbl + '</label>' +
+        '</div>';
+    }).join('');
+  }
+
+  function chipGroup(loc, nameField, options) {
+    return options.map(function(opt, i) {
+      return '<div class="chip-item">' +
+        '<input type="checkbox" id="' + loc.key + '-' + nameField + '-' + i + '" name="' + loc.key + '_' + nameField + '" value="' + opt + '">' +
+        '<label for="' + loc.key + '-' + nameField + '-' + i + '" class="chip-label">' + opt + '</label>' +
+        '</div>';
+    }).join('');
+  }
+
+  PAIN_LOCATIONS.forEach(function(loc) {
+    var html = '<div id="sub-pain-' + loc.key + '" class="sub-card-wrapper">' +
+      '<div class="sub-card">' +
+      '<div class="sub-card-title">' + loc.label + ' — 详细情况</div>' +
+
+      '<div class="field">' +
+      '<label class="field-label">疼痛感觉</label>' +
+      '<div class="radio-group">' + radioGroup(loc, 'pain_type', ['酸痛', '刺痛', '胀痛', '僵硬', '说不清']) + '</div>' +
+      '</div>' +
+
+      '<div class="field">' +
+      '<label class="field-label">疼痛程度</label>' +
+      '<div class="radio-group">' + radioGroup(loc, 'pain_severity', [
+        {value: '轻微', label: '轻微不影响生活'},
+        {value: '中等', label: '中等有时不方便'},
+        {value: '严重', label: '比较严重影响走路或做事'}
+      ]) + '</div>' +
+      '</div>' +
+
+      '<div class="field">' +
+      '<label class="field-label">多久痛一次？</label>' +
+      '<div class="radio-group">' + radioGroup(loc, 'pain_freq', ['偶尔', '每周几次', '几乎每天', '一直在痛']) + '</div>' +
+      '</div>' +
+
+      '<div class="field">' +
+      '<label class="field-label">每次持续多久？</label>' +
+      '<div class="radio-group">' + radioGroup(loc, 'pain_duration', ['几分钟', '半小时左右', '几小时', '一整天或更久']) + '</div>' +
+      '</div>' +
+
+      '<div class="field">' +
+      '<label class="field-label">什么情况下加重？（可多选）</label>' +
+      '<div class="chip-group">' + chipGroup(loc, 'triggers', ['早上刚起床', '爬楼梯', '走路久了', '久坐站起来', '天冷或下雨', '干重活']) + '</div>' +
+      '</div>' +
+
+      '<div class="field">' +
+      '<label class="field-label">什么能缓解？（可多选）</label>' +
+      '<div class="chip-group">' + chipGroup(loc, 'relief', ['休息', '热敷', '按摩', '吃止痛药', '贴膏药', '什么都没用']) + '</div>' +
+      '</div>' +
+
+      '</div></div>';
+
+    container.insertAdjacentHTML('beforeend', html);
+  });
+}
+
+// ─── localStorage ────────────────────────────────────────
+function saveState() {
+  var state = {};
+  document.querySelectorAll('input[type="radio"]').forEach(function(el) {
+    if (el.checked && el.name) state['r:' + el.name] = el.value;
+  });
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+    if (el.id) state['c:' + el.id] = el.checked;
+  });
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="month"]').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key) state['i:' + key] = el.value;
+  });
+  document.querySelectorAll('select').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key) state['s:' + key] = el.value;
+  });
+  document.querySelectorAll('.med-list[data-max]').forEach(function(list) {
+    state['medcount:' + list.id] = list.querySelectorAll('.med-row').length;
+  });
+  try { localStorage.setItem(FORM_ID, JSON.stringify(state)); } catch(e) {}
+}
+
+function restoreState() {
+  var state;
+  try { state = JSON.parse(localStorage.getItem(FORM_ID)); } catch(e) {}
+  if (!state) return;
+
+  document.querySelectorAll('.med-list[data-max]').forEach(function(list) {
+    var count = state['medcount:' + list.id] || 1;
+    while (list.querySelectorAll('.med-row').length < count) {
+      _appendMedRow(list);
+    }
+  });
+
+  document.querySelectorAll('input[type="radio"]').forEach(function(el) {
+    if (el.name && state['r:' + el.name] === el.value) {
+      el.checked = true;
+      if (el.dataset.expands !== undefined) handleRadioExpand(el, el.name, true);
+    }
+  });
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+    if (el.id && state['c:' + el.id]) {
+      el.checked = true;
+      if (el.dataset.expands) openSubCard(el.dataset.expands);
+    }
+  });
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="month"]').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key && state['i:' + key] !== undefined) el.value = state['i:' + key];
+  });
+  document.querySelectorAll('select').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key && state['s:' + key] !== undefined) el.value = state['s:' + key];
+  });
+}
+
+function clearForm() {
+  if (!confirm('确定要清除所有已填内容吗？')) return;
+  try { localStorage.removeItem(FORM_ID); } catch(e) {}
+  location.reload();
+}
+
+document.addEventListener('change', saveState);
+document.addEventListener('input', saveState);
+
+// ─── Conditional expansion ───────────────────────────────
+function openSubCard(id) {
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+
+function closeSubCard(id) {
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('open');
+  el.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(function(i) { i.checked = false; });
+  el.querySelectorAll('input[type="text"], input[type="number"], input[type="month"]').forEach(function(i) { i.value = ''; });
+  el.querySelectorAll('select').forEach(function(s) { s.selectedIndex = 0; });
+  el.querySelectorAll('.sub-card-wrapper').forEach(function(nested) { nested.classList.remove('open'); });
+}
+
+function handleChipExpand(checkbox) {
+  if (!checkbox.dataset.expands) return;
+  checkbox.checked ? openSubCard(checkbox.dataset.expands) : closeSubCard(checkbox.dataset.expands);
+}
+
+function handleRadioExpand(radio, radioName, silent) {
+  document.querySelectorAll('input[name="' + radioName + '"][data-expands]').forEach(function(r) {
+    if (!r.checked) closeSubCard(r.dataset.expands);
+  });
+  if (radio.checked && radio.dataset.expands) openSubCard(radio.dataset.expands);
+}
+
+// ─── Medication rows (prefix-aware) ─────────────────────
+function _appendMedRow(list) {
+  var idx = list.querySelectorAll('.med-row').length;
+  var max = parseInt(list.dataset.max) || 8;
+  if (idx >= max) return;
+  var prefix = list.dataset.prefix || 'med';
+  var phName = list.dataset.phName || '药名 / 保健品';
+  var phNote = list.dataset.phNote || '备注';
+  var hasNote = list.dataset.hasNote !== 'false';
+
+  var row = document.createElement('div');
+  row.className = 'med-row';
+  var html = '<input type="text" class="med-name" placeholder="' + phName + '" name="' + prefix + '_' + idx + '_name">' +
+    '<select class="med-freq" name="' + prefix + '_' + idx + '_freq">' +
+    '<option value="">频率</option><option value="每天">每天</option><option value="每周">每周</option>' +
+    '<option value="需要时">需要时</option><option value="已停用">已停用</option></select>';
+  if (hasNote) {
+    html += '<input type="text" class="med-note" placeholder="' + phNote + '" name="' + prefix + '_' + idx + '_note">';
+  }
+  html += '<button type="button" class="btn-remove-med" onclick="removeMedRow(this)">×</button>';
+  row.innerHTML = html;
+  list.appendChild(row);
+
+  if (list.dataset.addBtn) {
+    var btn = document.getElementById(list.dataset.addBtn);
+    if (btn) btn.disabled = list.querySelectorAll('.med-row').length >= max;
+  }
+}
+
+function addMedRow(listId) {
+  var list = document.getElementById(listId);
+  if (!list) return;
+  _appendMedRow(list);
+  saveState();
+}
+
+function removeMedRow(btn) {
+  var row = btn.closest('.med-row');
+  var list = row.closest('.med-list');
+  if (!list || list.querySelectorAll('.med-row').length <= 1) return;
+  row.remove();
+  var prefix = list.dataset.prefix || 'med';
+  list.querySelectorAll('.med-row').forEach(function(r, i) {
+    var n = r.querySelector('.med-name'); if (n) n.name = prefix + '_' + i + '_name';
+    var f = r.querySelector('.med-freq'); if (f) f.name = prefix + '_' + i + '_freq';
+    var o = r.querySelector('.med-note'); if (o) o.name = prefix + '_' + i + '_note';
+  });
+  if (list.dataset.addBtn) {
+    var btn2 = document.getElementById(list.dataset.addBtn);
+    if (btn2) btn2.disabled = false;
+  }
+  saveState();
+}
+
+// ─── Copy output ─────────────────────────────────────────
+function collectFormData() {
+  var data = { _meta: {} };
+  var now = new Date();
+  data._meta.form_id = FORM_ID;
+  data._meta.person = FORM_PERSON;
+  data._meta.submitted = now.toISOString().slice(0, 10);
+
+  document.querySelectorAll('input[type="radio"]:checked').forEach(function(el) {
+    if (el.name) data[el.name] = el.value;
+  });
+  document.querySelectorAll('input[type="checkbox"][name]').forEach(function(el) {
+    if (!data[el.name]) data[el.name] = [];
+    if (el.checked) data[el.name].push(el.value);
+  });
+  document.querySelectorAll('input[type="text"][name], input[type="number"][name], input[type="month"][name]').forEach(function(el) {
+    if (el.value !== '') data[el.name] = el.value;
+  });
+  document.querySelectorAll('select[name]').forEach(function(el) {
+    if (el.value !== '') data[el.name] = el.value;
+  });
+  return data;
+}
+
+function buildPlainText(data) {
+  var now = new Date();
+  var lines = [
+    '📋 骨骼与关节健康评估  ' + now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日',
+    '填表人：妈妈',
+    ''
+  ];
+
+  function add(label, key) {
+    var v = data[key];
+    if (v === undefined) return;
+    var val = Array.isArray(v) ? (v.length ? v.join('、') : '') : v;
+    if (!val) return;
+    lines.push(label + '：' + val);
+  }
+
+  function addMeds(prefix, label) {
+    for (var i = 0; i < 8; i++) {
+      if (!data[prefix + '_' + i + '_name']) continue;
+      var row = '  ' + label + (i+1) + '：' + data[prefix + '_' + i + '_name'];
+      if (data[prefix + '_' + i + '_freq']) row += '（' + data[prefix + '_' + i + '_freq'] + '）';
+      if (data[prefix + '_' + i + '_note']) row += ' ' + data[prefix + '_' + i + '_note'];
+      lines.push(row);
+    }
+  }
+
+  lines.push('【骨密度检查历史】');
+  add('做过骨密度检查吗', 'dexa_done');
+  if (data.dexa_done === '做过') {
+    add('检查时间', 'dexa_date');
+    add('医生怎么说', 'dexa_result');
+    add('开药或建议', 'dexa_treatment');
+  }
+  lines.push('');
+
+  lines.push('【钙摄入行为】');
+  lines.push('含钙食物频率：');
+  var foods = [
+    ['food_tofu', '豆腐/豆干/豆皮'],
+    ['food_shrimp', '虾皮/小鱼干'],
+    ['food_sesame', '芝麻/芝麻酱'],
+    ['food_dark_greens', '深绿色蔬菜'],
+    ['food_yogurt', '酸奶/奶酪'],
+    ['food_seaweed', '海带/紫菜'],
+    ['food_fungus', '黑木耳'],
+  ];
+  foods.forEach(function(f) {
+    if (data[f[0]]) lines.push('  ' + f[1] + '：' + data[f[0]]);
+  });
+  add('在吃补钙保健品吗', 'calcium_supplement');
+  if (data.calcium_supplement === '有') addMeds('calcium_med', '钙片');
+  lines.push('');
+
+  lines.push('【维生素D与日照】');
+  add('每天晒太阳时间', 'sun_duration');
+  add('一般什么时候在外面', 'sun_time');
+  add('涂防晒霜或打伞', 'sun_protection');
+  add('维生素D保健品', 'vitamin_d_supplement');
+  lines.push('');
+
+  lines.push('【关节酸痛详情】');
+  add('痛的部位', 'pain_locations');
+  PAIN_LOCATIONS.forEach(function(loc) {
+    var hasData = data[loc.key + '_pain_type'] || data[loc.key + '_pain_severity'] ||
+                  data[loc.key + '_pain_freq'] || data[loc.key + '_pain_duration'];
+    if (!hasData) return;
+    lines.push('  ' + loc.label + '：');
+    if (data[loc.key + '_pain_type']) lines.push('    感觉：' + data[loc.key + '_pain_type']);
+    if (data[loc.key + '_pain_severity']) lines.push('    程度：' + data[loc.key + '_pain_severity']);
+    if (data[loc.key + '_pain_freq']) lines.push('    频率：' + data[loc.key + '_pain_freq']);
+    if (data[loc.key + '_pain_duration']) lines.push('    持续：' + data[loc.key + '_pain_duration']);
+    var triggers = data[loc.key + '_triggers'];
+    if (triggers && triggers.length) lines.push('    加重：' + triggers.join('、'));
+    var relief = data[loc.key + '_relief'];
+    if (relief && relief.length) lines.push('    缓解：' + relief.join('、'));
+  });
+  lines.push('');
+
+  lines.push('【就医与用药】');
+  add('看过骨头关节方面的医生吗', 'bone_doctor_visit');
+  if (data.bone_doctor_visit === '有') {
+    add('就医时间', 'bone_visit_date');
+    add('医生诊断', 'bone_diagnosis');
+    addMeds('bone_med', '药物');
+  }
+  add('买过骨头关节保健品吗', 'bone_supplement');
+  if (data.bone_supplement === '有') addMeds('bone_supp', '保健品');
+  lines.push('');
+
+  lines.push('【烹饪关联】');
+  add('炒菜放盐量', 'salt_amount');
+  add('常用调料', 'extra_condiments');
+
+  return lines.join('\n');
+}
+
+function toYAML(obj, depth) {
+  depth = depth || 0;
+  var pad = '  '.repeat(depth);
+  var lines = [];
+  for (var k in obj) {
+    if (!obj.hasOwnProperty(k)) continue;
+    var v = obj[k];
+    if (Array.isArray(v)) {
+      if (v.length === 0) {
+        lines.push(pad + k + ': []');
+      } else {
+        lines.push(pad + k + ':');
+        v.forEach(function(item) { lines.push(pad + '  - ' + item); });
+      }
+    } else if (v !== null && typeof v === 'object') {
+      lines.push(pad + k + ':');
+      lines.push(toYAML(v, depth + 1));
+    } else {
+      var safe = (typeof v === 'string' && /[:#\[\]{}&*!|>'"%@`]/.test(v))
+        ? '"' + v.replace(/"/g, '\\"') + '"' : v;
+      lines.push(pad + k + ': ' + safe);
+    }
+  }
+  return lines.join('\n');
+}
+
+function copyResults() {
+  var data = collectFormData();
+  var plain = buildPlainText(data);
+  var yaml = toYAML(data);
+  var separator = '\n\n———— 以下是宸宸用的数据，不用管 ————\n\n';
+  var full = plain + separator + yaml;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(full).then(showToast).catch(function() { fallbackCopy(full); });
+  } else {
+    fallbackCopy(full);
+  }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  showToast();
+}
+
+function showToast() {
+  var t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+// ─── Init ─────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  initPainSubCards();
+  restoreState();
+});
+</script>
+
+</body>
+</html>

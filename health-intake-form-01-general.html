@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>健康信息登记表</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+      background: #FFF5EE;
+      color: #333;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .header {
+      position: relative;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .header-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 28%;
+    }
+
+    /* Two-layer gradient: darken top edge + terracotta fade at bottom where text sits */
+    .header-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 35%),
+        linear-gradient(to top,   rgba(150,45,20,0.82) 0%, transparent 55%);
+    }
+
+    .header-content {
+      position: relative;
+      padding: 28px 16px 22px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 8px;
+    }
+
+    .header-caption {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .section {
+      background: white;
+      margin: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+
+    .section-header {
+      background: #FAF0EC;
+      padding: 13px 16px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #AD5540;
+      border-bottom: 1px solid #F0DDD8;
+    }
+
+    .section-body {
+      padding: 16px;
+    }
+
+    .section-note {
+      font-size: 12px;
+      color: #B0A09A;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label.field-label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 9px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="month"],
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 9px;
+      font-size: 16px;
+      font-family: inherit;
+      color: #333;
+      background: #FAFAFA;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #D4735B;
+      background: white;
+    }
+
+    input:disabled {
+      background: #F2F2F2;
+      color: #C0C0C0;
+      border-color: #E8E8E8;
+    }
+
+    /* Person selector */
+    .radio-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .radio-card {
+      flex: 1;
+      position: relative;
+    }
+
+    .radio-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-card .radio-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      border: 2px solid #E0D5D0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 700;
+      color: #999;
+      background: #FAFAFA;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      margin-bottom: 0;
+    }
+
+    .radio-card input:checked + .radio-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #D4735B;
+    }
+
+    /* Symptom toggles */
+    .symptom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .symptom-item {
+      position: relative;
+    }
+
+    .symptom-item input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .symptom-item .symptom-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 13px 8px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: #777;
+      background: #FAFAFA;
+      min-height: 54px;
+      line-height: 1.35;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      margin-bottom: 0;
+    }
+
+    .symptom-item input:checked + .symptom-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #C05040;
+    }
+
+    /* Medications */
+    .med-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 9px;
+      align-items: center;
+    }
+
+    .med-row input[type="text"] {
+      flex: 1;
+    }
+
+    .med-row select {
+      width: 110px;
+      flex-shrink: 0;
+    }
+
+    .btn-add-med {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 13px;
+      border: 1.5px dashed #D4735B;
+      border-radius: 9px;
+      background: transparent;
+      color: #D4735B;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 4px;
+    }
+
+    .btn-add-med:disabled {
+      border-color: #DDD;
+      color: #CCC;
+      cursor: default;
+    }
+
+    /* Lab values */
+    .lab-row {
+      margin-bottom: 16px;
+    }
+
+    .lab-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .lab-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .lab-meta-row label.field-label {
+      margin-bottom: 0;
+    }
+
+    .unsure-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: #AAA;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .unsure-toggle input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      -webkit-appearance: checkbox;
+      appearance: checkbox;
+      flex-shrink: 0;
+    }
+
+    .lab-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lab-input-row input {
+      flex: 1;
+    }
+
+    .lab-unit {
+      font-size: 13px;
+      color: #999;
+      white-space: nowrap;
+      min-width: 60px;
+    }
+
+    /* Copy button */
+    .copy-section {
+      padding: 16px 12px calc(40px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .btn-copy {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      background: #D4735B;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 1px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-copy:active {
+      background: #BA5A43;
+    }
+
+    .copy-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #BBB;
+      margin-top: 10px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.72);
+      color: white;
+      padding: 11px 24px;
+      border-radius: 22px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <img class="header-photo" src="family-photo-2018.jpg" alt="全家福">
+  <div class="header-overlay"></div>
+  <div class="header-content">
+    <h1>健康信息登记表</h1>
+    <p>不知道的可以跳过，不用全部填完</p>
+  </div>
+  <span class="header-caption">2018 · 港珠澳大桥</span>
+</div>
+
+<!-- Section 1: Basic Info -->
+<div class="section">
+  <div class="section-header">① 基本信息</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">这份表格是谁的？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="person-dad" name="person" value="爸爸">
+          <label for="person-dad" class="radio-label">爸爸</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="person-mom" name="person" value="妈妈">
+          <label for="person-mom" class="radio-label">妈妈</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="height">身高（厘米）</label>
+      <input type="number" id="height" placeholder="例如 165" min="100" max="250" inputmode="numeric">
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="weight">体重（公斤）</label>
+      <input type="number" id="weight" placeholder="例如 62.5" min="20" max="300" step="0.1" inputmode="decimal">
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="last-checkup">上次体检时间</label>
+      <input type="month" id="last-checkup">
+    </div>
+
+  </div>
+</div>
+
+<!-- Section 2: Symptoms -->
+<div class="section">
+  <div class="section-header">② 目前症状</div>
+  <div class="section-body">
+
+    <p class="section-note">有的就点一下，可以多选，没有的跳过就好</p>
+
+    <div class="symptom-grid">
+      <div class="symptom-item">
+        <input type="checkbox" id="s1" name="symptoms" value="血糖偏高">
+        <label for="s1" class="symptom-label">血糖偏高</label>
+      </div>
+      <div class="symptom-item">
+        <input type="checkbox" id="s2" name="symptoms" value="血脂偏高">
+        <label for="s2" class="symptom-label">血脂偏高</label>
+      </div>
+      <div class="symptom-item">
+        <input type="checkbox" id="s3" name="symptoms" value="尿酸偏高／痛风">
+        <label for="s3" class="symptom-label">尿酸偏高／痛风</label>
+      </div>
+      <div class="symptom-item">
+        <input type="checkbox" id="s4" name="symptoms" value="骨密度偏低">
+        <label for="s4" class="symptom-label">骨密度偏低</label>
+      </div>
+      <div class="symptom-item">
+        <input type="checkbox" id="s5" name="symptoms" value="关节酸痛">
+        <label for="s5" class="symptom-label">关节酸痛</label>
+      </div>
+      <div class="symptom-item">
+        <input type="checkbox" id="s6" name="symptoms" value="便秘">
+        <label for="s6" class="symptom-label">便秘</label>
+      </div>
+      <div class="symptom-item">
+        <input type="checkbox" id="s7" name="symptoms" value="反酸／烧心">
+        <label for="s7" class="symptom-label">反酸／烧心</label>
+      </div>
+      <div class="symptom-item">
+        <input type="checkbox" id="s8" name="symptoms" value="失眠／睡眠差">
+        <label for="s8" class="symptom-label">失眠／睡眠差</label>
+      </div>
+      <div class="symptom-item">
+        <input type="checkbox" id="s9" name="symptoms" value="牙龈出血">
+        <label for="s9" class="symptom-label">牙龈出血</label>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top: 12px;">
+      <label class="field-label" for="symptom-other">其他（简单写一下）</label>
+      <input type="text" id="symptom-other" placeholder="可以不填">
+    </div>
+
+  </div>
+</div>
+
+<!-- Section 3: Medications -->
+<div class="section">
+  <div class="section-header">③ 目前用药</div>
+  <div class="section-body">
+
+    <p class="section-note">正在吃的药或保健品，不记得名字也没关系</p>
+
+    <div id="med-list">
+      <div class="med-row">
+        <input type="text" placeholder="药名 / 保健品" class="med-name">
+        <select class="med-freq">
+          <option value="">频率</option>
+          <option value="每天">每天</option>
+          <option value="每周">每周</option>
+          <option value="需要时">需要时</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-add-med" id="add-med-btn" onclick="addMedRow()">
+      + 再加一种药
+    </button>
+
+  </div>
+</div>
+
+<!-- Section 4: Lab Values -->
+<div class="section">
+  <div class="section-header">④ 最近检查数值 <span style="font-weight:400;font-size:12px;opacity:0.7">（可选，有体检报告对照填）</span></div>
+  <div class="section-body">
+
+    <p class="section-note">不知道的就勾"不清楚"，完全跳过这部分也可以</p>
+
+    <div class="lab-row">
+      <div class="lab-meta-row">
+        <label class="field-label">空腹血糖 (Fasting Glucose)</label>
+        <label class="unsure-toggle">
+          <input type="checkbox" onchange="toggleLab(this, 'lab-glucose')">不清楚
+        </label>
+      </div>
+      <div class="lab-input-row">
+        <input type="number" id="lab-glucose" placeholder="数值" step="0.1" inputmode="decimal">
+        <span class="lab-unit">mmol/L</span>
+      </div>
+    </div>
+
+    <div class="lab-row">
+      <div class="lab-meta-row">
+        <label class="field-label">尿酸 (Uric Acid)</label>
+        <label class="unsure-toggle">
+          <input type="checkbox" onchange="toggleLab(this, 'lab-uric')">不清楚
+        </label>
+      </div>
+      <div class="lab-input-row">
+        <input type="number" id="lab-uric" placeholder="数值" inputmode="numeric">
+        <span class="lab-unit">μmol/L</span>
+      </div>
+    </div>
+
+    <div class="lab-row">
+      <div class="lab-meta-row">
+        <label class="field-label">总胆固醇 (Total Cholesterol)</label>
+        <label class="unsure-toggle">
+          <input type="checkbox" onchange="toggleLab(this, 'lab-chol')">不清楚
+        </label>
+      </div>
+      <div class="lab-input-row">
+        <input type="number" id="lab-chol" placeholder="数值" step="0.1" inputmode="decimal">
+        <span class="lab-unit">mmol/L</span>
+      </div>
+    </div>
+
+    <div class="lab-row">
+      <div class="lab-meta-row">
+        <label class="field-label">甘油三酯 (Triglycerides)</label>
+        <label class="unsure-toggle">
+          <input type="checkbox" onchange="toggleLab(this, 'lab-trig')">不清楚
+        </label>
+      </div>
+      <div class="lab-input-row">
+        <input type="number" id="lab-trig" placeholder="数值" step="0.1" inputmode="decimal">
+        <span class="lab-unit">mmol/L</span>
+      </div>
+    </div>
+
+    <div class="lab-row">
+      <div class="lab-meta-row">
+        <label class="field-label">骨密度T值 (Bone Density T-score)</label>
+        <label class="unsure-toggle">
+          <input type="checkbox" onchange="toggleLab(this, 'lab-bone')">不清楚
+        </label>
+      </div>
+      <div class="lab-input-row">
+        <input type="number" id="lab-bone" placeholder="例如 -1.5" step="0.1" inputmode="decimal">
+        <span class="lab-unit">T-score</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Copy Button -->
+<div class="copy-section">
+  <button class="btn-copy" onclick="copyResults()">复制结果，发给宸宸</button>
+  <p class="copy-hint">点击后自动复制，粘贴到微信发给宸宸就好</p>
+</div>
+
+<div class="toast" id="toast">已复制！粘贴到微信发给宸宸</div>
+
+<script>
+  // Set max month to current
+  document.getElementById('last-checkup').max = new Date().toISOString().slice(0, 7);
+
+  // Add medication row (max 5)
+  let medCount = 1;
+  function addMedRow() {
+    if (medCount >= 5) return;
+    medCount++;
+    const row = document.createElement('div');
+    row.className = 'med-row';
+    row.innerHTML = `
+      <input type="text" placeholder="药名 / 保健品" class="med-name">
+      <select class="med-freq">
+        <option value="">频率</option>
+        <option value="每天">每天</option>
+        <option value="每周">每周</option>
+        <option value="需要时">需要时</option>
+      </select>
+    `;
+    document.getElementById('med-list').appendChild(row);
+    if (medCount >= 5) {
+      document.getElementById('add-med-btn').disabled = true;
+    }
+  }
+
+  // Disable lab input when "不清楚" is checked
+  function toggleLab(checkbox, inputId) {
+    const input = document.getElementById(inputId);
+    input.disabled = checkbox.checked;
+    if (checkbox.checked) {
+      input.value = '';
+      input.placeholder = '不清楚';
+    } else {
+      input.placeholder = '数值';
+    }
+  }
+
+  // Format and copy results as plain text
+  function copyResults() {
+    const lines = [];
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+    lines.push(`📋 健康信息登记 ${dateStr}`);
+    lines.push('');
+
+    // Section 1
+    const personEl = document.querySelector('input[name="person"]:checked');
+    const person = personEl ? personEl.value : '（未选）';
+    const height = document.getElementById('height').value;
+    const weight = document.getElementById('weight').value;
+    const checkup = document.getElementById('last-checkup').value;
+
+    lines.push('【基本信息】');
+    lines.push(`填表人：${person}`);
+    if (height) lines.push(`身高：${height} cm`);
+    if (weight) lines.push(`体重：${weight} kg`);
+    if (checkup) {
+      const [y, m] = checkup.split('-');
+      lines.push(`上次体检：${y}年${parseInt(m)}月`);
+    }
+    lines.push('');
+
+    // Section 2
+    const symptoms = [...document.querySelectorAll('input[name="symptoms"]:checked')].map(c => c.value);
+    const other = document.getElementById('symptom-other').value.trim();
+    lines.push('【目前症状】');
+    if (symptoms.length > 0) lines.push(symptoms.join('、'));
+    else lines.push('无');
+    if (other) lines.push(`其他：${other}`);
+    lines.push('');
+
+    // Section 3
+    const medRows = document.querySelectorAll('.med-row');
+    const meds = [];
+    medRows.forEach(row => {
+      const name = row.querySelector('.med-name').value.trim();
+      const freq = row.querySelector('.med-freq').value;
+      if (name) meds.push(`${name}${freq ? '（' + freq + '）' : ''}`);
+    });
+    lines.push('【目前用药】');
+    if (meds.length > 0) meds.forEach(m => lines.push('· ' + m));
+    else lines.push('无');
+    lines.push('');
+
+    // Section 4
+    lines.push('【检查数值】');
+    const labs = [
+      { id: 'lab-glucose', name: '空腹血糖', unit: 'mmol/L' },
+      { id: 'lab-uric',    name: '尿酸',     unit: 'μmol/L' },
+      { id: 'lab-chol',    name: '总胆固醇', unit: 'mmol/L' },
+      { id: 'lab-trig',    name: '甘油三酯', unit: 'mmol/L' },
+      { id: 'lab-bone',    name: '骨密度T值', unit: '' },
+    ];
+    let anyLab = false;
+    labs.forEach(f => {
+      const el = document.getElementById(f.id);
+      if (el.disabled) {
+        lines.push(`${f.name}：不清楚`);
+        anyLab = true;
+      } else if (el.value !== '') {
+        lines.push(`${f.name}：${el.value}${f.unit ? ' ' + f.unit : ''}`);
+        anyLab = true;
+      }
+    });
+    if (!anyLab) lines.push('未填写');
+
+    const text = lines.join('\n');
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    showToast();
+  }
+
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+</script>
+
+</body>
+</html>

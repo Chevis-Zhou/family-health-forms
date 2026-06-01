@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>代谢与消化健康评估</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+      background: #FFF5EE;
+      color: #333;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    .header {
+      position: relative;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .header-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 28%;
+    }
+
+    .header-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 35%),
+        linear-gradient(to top, rgba(150,45,20,0.82) 0%, transparent 55%);
+    }
+
+    .header-content {
+      position: relative;
+      padding: 28px 16px 22px;
+    }
+
+    .header-period {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .header-subtitle {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 6px;
+    }
+
+    .header-caption {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── 体检报告 Banner ── */
+    .exam-banner {
+      margin: 12px 12px 0;
+      background: #EBF4FB;
+      border: 1.5px solid #C2DDF0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .exam-banner-icon { font-size: 26px; flex-shrink: 0; }
+
+    .exam-banner-text {
+      font-size: 14px;
+      color: #2B6A9B;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    /* ── Sections ── */
+    .section {
+      background: white;
+      margin: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+
+    .section-header {
+      background: #FAF0EC;
+      padding: 13px 16px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #AD5540;
+      border-bottom: 1px solid #F0DDD8;
+    }
+
+    .section-body { padding: 16px; }
+
+    .section-note {
+      font-size: 12px;
+      color: #B0A09A;
+      margin-bottom: 14px;
+    }
+
+    .field { margin-bottom: 20px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label.field-label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .subsection-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #AD5540;
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #F0DDD8;
+    }
+
+    /* ── Text/Number/Month/Select inputs ── */
+    input[type="text"],
+    input[type="number"],
+    input[type="month"],
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 9px;
+      font-size: 16px;
+      font-family: inherit;
+      color: #333;
+      background: #FAFAFA;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #D4735B;
+      background: white;
+    }
+
+    .input-unit-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-unit-wrapper input { flex: 1; }
+
+    .input-unit {
+      font-size: 13px;
+      color: #999;
+      flex-shrink: 0;
+    }
+
+    /* ── Radio chips (single-select) ── */
+    .radio-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .radio-card { position: relative; }
+
+    .radio-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-card .radio-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #777;
+      background: #FAFAFA;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .radio-card input:checked + .radio-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #C05040;
+    }
+
+    /* ── Checkbox chips (multi-select) ── */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-item { position: relative; }
+
+    .chip-item input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .chip-item .chip-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #777;
+      background: #FAFAFA;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .chip-item input:checked + .chip-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #C05040;
+    }
+
+    /* ── Conditional sub-cards ── */
+    .sub-card-wrapper {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.25s ease;
+    }
+
+    .sub-card-wrapper.open {
+      max-height: 5000px;
+      opacity: 1;
+    }
+
+    .sub-card {
+      margin-top: 8px;
+      background: #FFF8F6;
+      border-left: 3px solid #D4735B;
+      border-radius: 0 10px 10px 0;
+      padding: 14px;
+    }
+
+    .sub-card .field { margin-bottom: 14px; }
+    .sub-card .field:last-child { margin-bottom: 0; }
+
+    .sub-card label.field-label {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .sub-card .radio-label,
+    .sub-card .chip-label {
+      font-size: 13px;
+      padding: 8px 13px;
+    }
+
+    .sub-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #AD5540;
+      margin-bottom: 10px;
+    }
+
+    /* ── Medication rows ── */
+    .med-list { margin-bottom: 8px; }
+
+    .med-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .med-row .med-name {
+      flex: 1;
+      font-size: 15px;
+      padding: 11px 12px;
+    }
+
+    .med-row .med-freq {
+      width: 90px;
+      flex-shrink: 0;
+      font-size: 14px;
+      padding: 11px 8px;
+    }
+
+    .med-row .med-note {
+      width: 90px;
+      flex-shrink: 0;
+      font-size: 13px;
+      padding: 11px 10px;
+    }
+
+    .btn-remove-med {
+      background: none;
+      border: none;
+      color: #CCC;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0 4px;
+      flex-shrink: 0;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-add-med {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border: 1.5px dashed #D4735B;
+      border-radius: 9px;
+      background: transparent;
+      color: #D4735B;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-add-med:disabled {
+      border-color: #DDD;
+      color: #CCC;
+      cursor: default;
+    }
+
+    /* ── 小贴士 ── */
+    .tips-section {
+      margin: 12px;
+      background: #FFF8E7;
+      border: 1.5px solid #F0DEB0;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tips-icon { font-size: 24px; flex-shrink: 0; }
+
+    .tips-text {
+      font-size: 14px;
+      color: #7A5A00;
+      line-height: 1.55;
+    }
+
+    /* ── Copy + Clear ── */
+    .copy-section { padding: 12px 12px 0; }
+
+    .btn-copy {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      background: #D4735B;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 1px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-copy:active { background: #BA5A43; }
+
+    .copy-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #BBB;
+      margin-top: 10px;
+    }
+
+    .btn-clear {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 18px 12px calc(36px + env(safe-area-inset-bottom, 0px));
+      font-size: 12px;
+      color: #CCC;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.72);
+      color: white;
+      padding: 11px 24px;
+      border-radius: 22px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <img class="header-photo" src="family-photo-2018.jpg" alt="全家福">
+  <div class="header-overlay"></div>
+  <div class="header-content">
+    <div class="header-period">第 4 期 · 2026年X月</div>
+    <h1>代谢与消化健康评估</h1>
+    <p class="header-subtitle">这是爸爸的表格，妈妈也可以帮忙填</p>
+    <p class="header-subtitle">不知道的可以跳过，不用全部填完</p>
+  </div>
+  <span class="header-caption">2018 · 港珠澳大桥</span>
+</div>
+
+<!-- 体检报告 Banner -->
+<div class="exam-banner">
+  <span class="exam-banner-icon">📸</span>
+  <span class="exam-banner-text">填表之前，先把最近的体检报告拍照发给宸宸哦</span>
+</div>
+
+
+<!-- ═══ Section A: 痛风发作史 ═══ -->
+<div class="section">
+  <div class="section-header">① 痛风发作史</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">有没有痛风发作过？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="gout-never" name="gout_history" value="从没有"
+                 data-expands="" onchange="handleRadioExpand(this, 'gout_history')">
+          <label for="gout-never" class="radio-label">从没有</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="gout-few" name="gout_history" value="发作过1-2次"
+                 data-expands="sub-gout-details" onchange="handleRadioExpand(this, 'gout_history')">
+          <label for="gout-few" class="radio-label">发作过1-2次</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="gout-several" name="gout_history" value="发作过好几次"
+                 data-expands="sub-gout-details" onchange="handleRadioExpand(this, 'gout_history')">
+          <label for="gout-several" class="radio-label">发作过好几次</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="gout-often" name="gout_history" value="经常发作"
+                 data-expands="sub-gout-details" onchange="handleRadioExpand(this, 'gout_history')">
+          <label for="gout-often" class="radio-label">经常发作</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-gout-details" class="sub-card-wrapper">
+      <div class="sub-card">
+
+        <div class="field">
+          <label class="field-label">最近一次大概什么时候？</label>
+          <input type="month" name="gout_last_date" id="gout-last-date">
+        </div>
+
+        <div class="field">
+          <label class="field-label">发作部位（可多选，选中后可填详细）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="gout-loc-bigtoe" name="gout_locations" value="大脚趾"
+                     data-expands="sub-gout-bigtoe" onchange="handleChipExpand(this)">
+              <label for="gout-loc-bigtoe" class="chip-label">大脚趾</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-loc-ankle" name="gout_locations" value="脚踝"
+                     data-expands="sub-gout-ankle" onchange="handleChipExpand(this)">
+              <label for="gout-loc-ankle" class="chip-label">脚踝</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-loc-knee" name="gout_locations" value="膝盖"
+                     data-expands="sub-gout-knee" onchange="handleChipExpand(this)">
+              <label for="gout-loc-knee" class="chip-label">膝盖</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-loc-finger" name="gout_locations" value="手指"
+                     data-expands="sub-gout-finger" onchange="handleChipExpand(this)">
+              <label for="gout-loc-finger" class="chip-label">手指</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-loc-wrist" name="gout_locations" value="手腕"
+                     data-expands="sub-gout-wrist" onchange="handleChipExpand(this)">
+              <label for="gout-loc-wrist" class="chip-label">手腕</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-loc-other" name="gout_locations" value="其他"
+                     data-expands="sub-gout-other" onchange="handleChipExpand(this)">
+              <label for="gout-loc-other" class="chip-label">其他</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Per-location sub-cards generated by JS -->
+        <div id="gout-location-sub-cards"></div>
+
+        <div class="field">
+          <label class="field-label">每次持续多久？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="gout-dur-days" name="gout_duration" value="几天">
+              <label for="gout-dur-days" class="radio-label">几天</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="gout-dur-week" name="gout_duration" value="一周左右">
+              <label for="gout-dur-week" class="radio-label">一周左右</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="gout-dur-long" name="gout_duration" value="两周以上">
+              <label for="gout-dur-long" class="radio-label">两周以上</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">怎么处理的？（可多选）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="gout-tx-endure" name="gout_treatment" value="忍着">
+              <label for="gout-tx-endure" class="chip-label">忍着</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-tx-painkiller" name="gout_treatment" value="吃止痛药">
+              <label for="gout-tx-painkiller" class="chip-label">吃止痛药</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-tx-hospital" name="gout_treatment" value="去医院">
+              <label for="gout-tx-hospital" class="chip-label">去医院</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-tx-uric" name="gout_treatment" value="吃降尿酸的药">
+              <label for="gout-tx-uric" class="chip-label">吃降尿酸的药</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-tx-ice" name="gout_treatment" value="冰敷">
+              <label for="gout-tx-ice" class="chip-label">冰敷</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="gout-tx-other" name="gout_treatment" value="其他">
+              <label for="gout-tx-other" class="chip-label">其他</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">有没有长期在吃降尿酸的药？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="uric-med-yes" name="uric_acid_med" value="有"
+                     data-expands="sub-uric-meds" onchange="handleRadioExpand(this, 'uric_acid_med')">
+              <label for="uric-med-yes" class="radio-label">有</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="uric-med-stopped" name="uric_acid_med" value="以前吃过现在停了"
+                     data-expands="sub-uric-meds" onchange="handleRadioExpand(this, 'uric_acid_med')">
+              <label for="uric-med-stopped" class="radio-label">以前吃过现在停了</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="uric-med-never" name="uric_acid_med" value="从来没吃过"
+                     data-expands="" onchange="handleRadioExpand(this, 'uric_acid_med')">
+              <label for="uric-med-never" class="radio-label">从来没吃过</label>
+            </div>
+          </div>
+        </div>
+
+        <div id="sub-uric-meds" class="sub-card-wrapper">
+          <div class="sub-card">
+            <p class="section-note">每种药一行，不记得名字可以描述外观</p>
+            <div class="med-list" id="uric-med-list" data-max="8" data-add-btn="uric-add-btn"
+                 data-prefix="uric_med" data-ph-name="药名" data-has-note="false">
+              <div class="med-row">
+                <input type="text" class="med-name" placeholder="药名" name="uric_med_0_name">
+                <select class="med-freq" name="uric_med_0_freq">
+                  <option value="">频率</option>
+                  <option value="每天">每天</option>
+                  <option value="每周">每周</option>
+                  <option value="需要时">需要时</option>
+                  <option value="已停用">已停用</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-add-med" id="uric-add-btn"
+                    onclick="addMedRow('uric-med-list')">+ 再加一种药</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section B: 血糖管理 ═══ -->
+<div class="section">
+  <div class="section-header">② 血糖管理</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">有没有被医生正式说过血糖的问题？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="bs-diabetes" name="blood_sugar_diagnosis" value="确诊糖尿病">
+          <label for="bs-diabetes" class="radio-label">确诊糖尿病</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bs-prediabetes" name="blood_sugar_diagnosis" value="说是糖尿病前期">
+          <label for="bs-prediabetes" class="radio-label">糖尿病前期</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bs-high" name="blood_sugar_diagnosis" value="只说血糖偏高">
+          <label for="bs-high" class="radio-label">只说血糖偏高</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bs-none" name="blood_sugar_diagnosis" value="没正式说过">
+          <label for="bs-none" class="radio-label">没正式说过</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">有没有在吃降糖药？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="sugar-med-yes" name="sugar_medication" value="有"
+                 data-expands="sub-sugar-meds" onchange="handleRadioExpand(this, 'sugar_medication')">
+          <label for="sugar-med-yes" class="radio-label">有</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="sugar-med-before" name="sugar_medication" value="以前吃过"
+                 data-expands="sub-sugar-meds" onchange="handleRadioExpand(this, 'sugar_medication')">
+          <label for="sugar-med-before" class="radio-label">以前吃过</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="sugar-med-no" name="sugar_medication" value="没有"
+                 data-expands="" onchange="handleRadioExpand(this, 'sugar_medication')">
+          <label for="sugar-med-no" class="radio-label">没有</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-sugar-meds" class="sub-card-wrapper">
+      <div class="sub-card">
+        <p class="section-note">每种药一行，不记得名字可以描述外观</p>
+        <div class="med-list" id="sugar-med-list" data-max="8" data-add-btn="sugar-add-btn"
+             data-prefix="sugar_med" data-ph-name="药名" data-has-note="false">
+          <div class="med-row">
+            <input type="text" class="med-name" placeholder="药名" name="sugar_med_0_name">
+            <select class="med-freq" name="sugar_med_0_freq">
+              <option value="">频率</option>
+              <option value="每天">每天</option>
+              <option value="每周">每周</option>
+              <option value="需要时">需要时</option>
+              <option value="已停用">已停用</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-add-med" id="sugar-add-btn"
+                onclick="addMedRow('sugar-med-list')">+ 再加一种药</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">家里有血糖仪吗？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="glucometer-often" name="glucometer" value="有，经常测"
+                 data-expands="sub-glucometer" onchange="handleRadioExpand(this, 'glucometer')">
+          <label for="glucometer-often" class="radio-label">有，经常测</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="glucometer-rare" name="glucometer" value="有，很少测"
+                 data-expands="sub-glucometer" onchange="handleRadioExpand(this, 'glucometer')">
+          <label for="glucometer-rare" class="radio-label">有，很少测</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="glucometer-no" name="glucometer" value="没有"
+                 data-expands="" onchange="handleRadioExpand(this, 'glucometer')">
+          <label for="glucometer-no" class="radio-label">没有</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-glucometer" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="field">
+          <label class="field-label">最近测的空腹血糖大概多少？</label>
+          <div class="input-unit-wrapper">
+            <input type="number" name="fasting_glucose" id="fasting-glucose" step="0.1" placeholder="例如 6.5">
+            <span class="input-unit">mmol/L</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">最近测的餐后血糖大概多少？</label>
+          <div class="input-unit-wrapper">
+            <input type="number" name="postmeal_glucose" id="postmeal-glucose" step="0.1" placeholder="例如 8.0">
+            <span class="input-unit">mmol/L</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">有没有这些症状？（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="bs-sym-thirst" name="blood_sugar_symptoms" value="容易口渴">
+          <label for="bs-sym-thirst" class="chip-label">容易口渴</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="bs-sym-urine" name="blood_sugar_symptoms" value="尿多">
+          <label for="bs-sym-urine" class="chip-label">尿多</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="bs-sym-hunger" name="blood_sugar_symptoms" value="容易饿">
+          <label for="bs-sym-hunger" class="chip-label">容易饿</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="bs-sym-weight" name="blood_sugar_symptoms" value="体重明显下降">
+          <label for="bs-sym-weight" class="chip-label">体重明显下降</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="bs-sym-wound" name="blood_sugar_symptoms" value="伤口愈合慢">
+          <label for="bs-sym-wound" class="chip-label">伤口愈合慢</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="bs-sym-vision" name="blood_sugar_symptoms" value="视力模糊">
+          <label for="bs-sym-vision" class="chip-label">视力模糊</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="bs-sym-none" name="blood_sugar_symptoms" value="都没有">
+          <label for="bs-sym-none" class="chip-label">都没有</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section C: 消化道症状 ═══ -->
+<div class="section">
+  <div class="section-header">③ 消化道症状</div>
+  <div class="section-body">
+
+    <!-- Reflux subsection -->
+    <div class="subsection-label">反酸 / 烧心</div>
+
+    <div class="field">
+      <label class="field-label">反酸烧心的频率？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="reflux-rare" name="reflux_frequency" value="偶尔"
+                 data-expands="" onchange="handleRadioExpand(this, 'reflux_frequency')">
+          <label for="reflux-rare" class="radio-label">偶尔</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="reflux-1-2" name="reflux_frequency" value="每周1-2次"
+                 data-expands="sub-reflux-details" onchange="handleRadioExpand(this, 'reflux_frequency')">
+          <label for="reflux-1-2" class="radio-label">每周1-2次</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="reflux-3plus" name="reflux_frequency" value="每周3次以上"
+                 data-expands="sub-reflux-details" onchange="handleRadioExpand(this, 'reflux_frequency')">
+          <label for="reflux-3plus" class="radio-label">每周3次以上</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="reflux-daily" name="reflux_frequency" value="几乎每天"
+                 data-expands="sub-reflux-details" onchange="handleRadioExpand(this, 'reflux_frequency')">
+          <label for="reflux-daily" class="radio-label">几乎每天</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-reflux-details" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="field">
+          <label class="field-label">什么时候容易发作？（可多选）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="reflux-trig-aftereat" name="reflux_triggers" value="刚吃完饭">
+              <label for="reflux-trig-aftereat" class="chip-label">刚吃完饭</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="reflux-trig-lying" name="reflux_triggers" value="躺下的时候">
+              <label for="reflux-trig-lying" class="chip-label">躺下的时候</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="reflux-trig-alcohol" name="reflux_triggers" value="喝酒后">
+              <label for="reflux-trig-alcohol" class="chip-label">喝酒后</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="reflux-trig-spicy" name="reflux_triggers" value="吃辣后">
+              <label for="reflux-trig-spicy" class="chip-label">吃辣后</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="reflux-trig-full" name="reflux_triggers" value="吃太饱后">
+              <label for="reflux-trig-full" class="chip-label">吃太饱后</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="reflux-trig-empty" name="reflux_triggers" value="空腹时">
+              <label for="reflux-trig-empty" class="chip-label">空腹时</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="reflux-trig-night" name="reflux_triggers" value="半夜">
+              <label for="reflux-trig-night" class="chip-label">半夜</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">严重程度</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="reflux-sev-mild" name="reflux_severity" value="有点不舒服">
+              <label for="reflux-sev-mild" class="radio-label">有点不舒服</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="reflux-sev-mod" name="reflux_severity" value="比较难受">
+              <label for="reflux-sev-mod" class="radio-label">比较难受</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="reflux-sev-severe" name="reflux_severity" value="很严重会影响睡觉或吃饭">
+              <label for="reflux-sev-severe" class="radio-label">很严重影响睡觉或吃饭</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">有没有吃过胃药？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="stomach-med-yes" name="stomach_med_taken" value="有"
+                     data-expands="sub-stomach-meds" onchange="handleRadioExpand(this, 'stomach_med_taken')">
+              <label for="stomach-med-yes" class="radio-label">有</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="stomach-med-no" name="stomach_med_taken" value="没有"
+                     data-expands="" onchange="handleRadioExpand(this, 'stomach_med_taken')">
+              <label for="stomach-med-no" class="radio-label">没有</label>
+            </div>
+          </div>
+        </div>
+
+        <div id="sub-stomach-meds" class="sub-card-wrapper">
+          <div class="sub-card">
+            <div class="med-list" id="stomach-med-list" data-max="8" data-add-btn="stomach-add-btn"
+                 data-prefix="stomach_med" data-ph-name="胃药名" data-note-type="effect">
+              <div class="med-row">
+                <input type="text" class="med-name" placeholder="胃药名" name="stomach_med_0_name">
+                <select class="med-freq" name="stomach_med_0_freq">
+                  <option value="">频率</option>
+                  <option value="每天">每天</option>
+                  <option value="每周">每周</option>
+                  <option value="需要时">需要时</option>
+                  <option value="已停用">已停用</option>
+                </select>
+                <select class="med-note" name="stomach_med_0_effect">
+                  <option value="">效果</option>
+                  <option value="有效">有效</option>
+                  <option value="没什么用">没什么用</option>
+                  <option value="不确定">不确定</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-add-med" id="stomach-add-btn"
+                    onclick="addMedRow('stomach-med-list')">+ 再加一种胃药</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Diarrhea subsection -->
+    <div class="subsection-label" style="margin-top: 20px;">拉肚子</div>
+
+    <div class="field">
+      <label class="field-label">拉肚子的频率？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="diarrhea-rare" name="diarrhea_frequency" value="很少"
+                 data-expands="" onchange="handleRadioExpand(this, 'diarrhea_frequency')">
+          <label for="diarrhea-rare" class="radio-label">很少</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="diarrhea-1-2" name="diarrhea_frequency" value="每周1-2次"
+                 data-expands="sub-diarrhea-details" onchange="handleRadioExpand(this, 'diarrhea_frequency')">
+          <label for="diarrhea-1-2" class="radio-label">每周1-2次</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="diarrhea-more" name="diarrhea_frequency" value="更多"
+                 data-expands="sub-diarrhea-details" onchange="handleRadioExpand(this, 'diarrhea_frequency')">
+          <label for="diarrhea-more" class="radio-label">更多</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-diarrhea-details" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="field">
+          <label class="field-label">吃什么容易拉？（可多选）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="diarrhea-trig-cold" name="diarrhea_triggers" value="凉菜凉饮">
+              <label for="diarrhea-trig-cold" class="chip-label">凉菜凉饮</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="diarrhea-trig-oily" name="diarrhea_triggers" value="油腻食物">
+              <label for="diarrhea-trig-oily" class="chip-label">油腻食物</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="diarrhea-trig-spicy" name="diarrhea_triggers" value="辣的">
+              <label for="diarrhea-trig-spicy" class="chip-label">辣的</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="diarrhea-trig-dairy" name="diarrhea_triggers" value="牛奶豆浆">
+              <label for="diarrhea-trig-dairy" class="chip-label">牛奶豆浆</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="diarrhea-trig-alcohol" name="diarrhea_triggers" value="喝酒后">
+              <label for="diarrhea-trig-alcohol" class="chip-label">喝酒后</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="diarrhea-trig-unclear" name="diarrhea_triggers" value="说不清">
+              <label for="diarrhea-trig-unclear" class="chip-label">说不清</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">拉肚子的时候肚子痛吗？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="diarrhea-pain-no" name="diarrhea_pain" value="不怎么痛">
+              <label for="diarrhea-pain-no" class="radio-label">不怎么痛</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="diarrhea-pain-some" name="diarrhea_pain" value="有点痛">
+              <label for="diarrhea-pain-some" class="radio-label">有点痛</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="diarrhea-pain-bad" name="diarrhea_pain" value="很痛">
+              <label for="diarrhea-pain-bad" class="radio-label">很痛</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section D: 饮酒习惯 ═══ -->
+<div class="section">
+  <div class="section-header">④ 饮酒习惯</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">平时喝酒吗？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="drink-no" name="drinking_frequency" value="不喝"
+                 data-expands="" onchange="handleRadioExpand(this, 'drinking_frequency')">
+          <label for="drink-no" class="radio-label">不喝</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="drink-social" name="drinking_frequency" value="偶尔社交喝"
+                 data-expands="sub-drinking-details" onchange="handleRadioExpand(this, 'drinking_frequency')">
+          <label for="drink-social" class="radio-label">偶尔社交喝</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="drink-1-2" name="drinking_frequency" value="每周1-2次"
+                 data-expands="sub-drinking-details" onchange="handleRadioExpand(this, 'drinking_frequency')">
+          <label for="drink-1-2" class="radio-label">每周1-2次</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="drink-3plus" name="drinking_frequency" value="每周3次以上"
+                 data-expands="sub-drinking-details" onchange="handleRadioExpand(this, 'drinking_frequency')">
+          <label for="drink-3plus" class="radio-label">每周3次以上</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="drink-daily" name="drinking_frequency" value="几乎每天喝"
+                 data-expands="sub-drinking-details" onchange="handleRadioExpand(this, 'drinking_frequency')">
+          <label for="drink-daily" class="radio-label">几乎每天喝</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-drinking-details" class="sub-card-wrapper">
+      <div class="sub-card">
+
+        <div class="field">
+          <label class="field-label">主要喝什么酒？（可多选，选中后可填量）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="alc-baijiu" name="alcohol_types" value="白酒"
+                     data-expands="sub-alc-baijiu" onchange="handleChipExpand(this)">
+              <label for="alc-baijiu" class="chip-label">白酒</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-beer" name="alcohol_types" value="啤酒"
+                     data-expands="sub-alc-beer" onchange="handleChipExpand(this)">
+              <label for="alc-beer" class="chip-label">啤酒</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-wine" name="alcohol_types" value="红酒"
+                     data-expands="sub-alc-wine" onchange="handleChipExpand(this)">
+              <label for="alc-wine" class="chip-label">红酒</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-rice" name="alcohol_types" value="米酒/黄酒"
+                     data-expands="sub-alc-rice" onchange="handleChipExpand(this)">
+              <label for="alc-rice" class="chip-label">米酒/黄酒</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-medicinal" name="alcohol_types" value="药酒"
+                     data-expands="sub-alc-medicinal" onchange="handleChipExpand(this)">
+              <label for="alc-medicinal" class="chip-label">药酒</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Per-alcohol-type sub-cards generated by JS -->
+        <div id="alcohol-sub-cards"></div>
+
+        <div class="field">
+          <label class="field-label">喝酒后有没有不舒服？（可多选）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="alc-eff-headache" name="alcohol_effects" value="头痛">
+              <label for="alc-eff-headache" class="chip-label">头痛</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-eff-stomach" name="alcohol_effects" value="胃痛">
+              <label for="alc-eff-stomach" class="chip-label">胃痛</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-eff-reflux" name="alcohol_effects" value="反酸加重">
+              <label for="alc-eff-reflux" class="chip-label">反酸加重</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-eff-diarrhea" name="alcohol_effects" value="拉肚子">
+              <label for="alc-eff-diarrhea" class="chip-label">拉肚子</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-eff-gout" name="alcohol_effects" value="痛风发作">
+              <label for="alc-eff-gout" class="chip-label">痛风发作</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-eff-sleep" name="alcohol_effects" value="睡不好">
+              <label for="alc-eff-sleep" class="chip-label">睡不好</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-eff-flush" name="alcohol_effects" value="脸红">
+              <label for="alc-eff-flush" class="chip-label">脸红</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-eff-none" name="alcohol_effects" value="没什么反应">
+              <label for="alc-eff-none" class="chip-label">没什么反应</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">喝酒一般在什么场合？（可多选）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="alc-ctx-home" name="alcohol_context" value="在家自己喝">
+              <label for="alc-ctx-home" class="chip-label">在家自己喝</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-ctx-friends" name="alcohol_context" value="朋友聚餐">
+              <label for="alc-ctx-friends" class="chip-label">朋友聚餐</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-ctx-business" name="alcohol_context" value="应酬">
+              <label for="alc-ctx-business" class="chip-label">应酬</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="alc-ctx-meal" name="alcohol_context" value="配饭喝">
+              <label for="alc-ctx-meal" class="chip-label">配饭喝</label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section E: 睡眠 ═══ -->
+<div class="section">
+  <div class="section-header">⑤ 睡眠</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">一般几点上床睡觉？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="bed-9" name="bedtime" value="9点前">
+          <label for="bed-9" class="radio-label">9点前</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bed-10" name="bedtime" value="10点左右">
+          <label for="bed-10" class="radio-label">10点左右</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bed-11" name="bedtime" value="11点左右">
+          <label for="bed-11" class="radio-label">11点左右</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bed-12" name="bedtime" value="12点以后">
+          <label for="bed-12" class="radio-label">12点以后</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="bed-late" name="bedtime" value="更晚">
+          <label for="bed-late" class="radio-label">更晚</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">大概能睡几个小时？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="hrs-5" name="sleep_hours" value="5小时以下">
+          <label for="hrs-5" class="radio-label">5小时以下</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="hrs-5-6" name="sleep_hours" value="5-6小时">
+          <label for="hrs-5-6" class="radio-label">5-6小时</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="hrs-6-7" name="sleep_hours" value="6-7小时">
+          <label for="hrs-6-7" class="radio-label">6-7小时</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="hrs-7-8" name="sleep_hours" value="7-8小时">
+          <label for="hrs-7-8" class="radio-label">7-8小时</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="hrs-8plus" name="sleep_hours" value="8小时以上">
+          <label for="hrs-8plus" class="radio-label">8小时以上</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">有哪些睡眠问题？（可多选，选中后可填详细）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="sleep-onset" name="sleep_problems" value="躺下很久才能睡着"
+                 data-expands="sub-sleep-onset" onchange="handleChipExpand(this)">
+          <label for="sleep-onset" class="chip-label">躺下很久才能睡着</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sleep-wake" name="sleep_problems" value="半夜容易醒"
+                 data-expands="sub-sleep-wake" onchange="handleChipExpand(this)">
+          <label for="sleep-wake" class="chip-label">半夜容易醒</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sleep-early" name="sleep_problems" value="醒得太早"
+                 data-expands="" onchange="handleChipExpand(this)">
+          <label for="sleep-early" class="chip-label">醒得太早</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sleep-snore" name="sleep_problems" value="打鼾很响"
+                 data-expands="sub-sleep-snore" onchange="handleChipExpand(this)">
+          <label for="sleep-snore" class="chip-label">打鼾很响</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sleep-dream" name="sleep_problems" value="做梦多"
+                 data-expands="" onchange="handleChipExpand(this)">
+          <label for="sleep-dream" class="chip-label">做梦多</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sleep-daytime" name="sleep_problems" value="白天很困"
+                 data-expands="" onchange="handleChipExpand(this)">
+          <label for="sleep-daytime" class="chip-label">白天很困</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sleep-good" name="sleep_problems" value="睡眠挺好"
+                 data-expands="" onchange="handleChipExpand(this)">
+          <label for="sleep-good" class="chip-label">睡眠挺好</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-sleep-problem sub-cards -->
+    <div id="sub-sleep-onset" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="sub-card-title">躺下很久才能睡着</div>
+        <div class="field">
+          <label class="field-label">大概多久能入睡？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="onset-30" name="sleep_onset_time" value="半小时以内">
+              <label for="onset-30" class="radio-label">半小时以内</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="onset-60" name="sleep_onset_time" value="半小时到1小时">
+              <label for="onset-60" class="radio-label">半小时到1小时</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="onset-more" name="sleep_onset_time" value="1小时以上">
+              <label for="onset-more" class="radio-label">1小时以上</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-sleep-wake" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="sub-card-title">半夜容易醒</div>
+        <div class="field">
+          <label class="field-label">一晚醒几次？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="wake-1" name="night_wake_count" value="1次">
+              <label for="wake-1" class="radio-label">1次</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="wake-2-3" name="night_wake_count" value="2-3次">
+              <label for="wake-2-3" class="radio-label">2-3次</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="wake-more" name="night_wake_count" value="更多">
+              <label for="wake-more" class="radio-label">更多</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">醒了能再睡着吗？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="wake-back-fast" name="night_wake_reback" value="很快睡着">
+              <label for="wake-back-fast" class="radio-label">很快睡着</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="wake-back-slow" name="night_wake_reback" value="要很久">
+              <label for="wake-back-slow" class="radio-label">要很久</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="wake-back-no" name="night_wake_reback" value="经常睡不回去">
+              <label for="wake-back-no" class="radio-label">经常睡不回去</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-sleep-snore" class="sub-card-wrapper">
+      <div class="sub-card">
+        <div class="sub-card-title">打鼾很响</div>
+        <div class="field">
+          <label class="field-label">有没有人说过你睡觉呼吸会停一下？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="apnea-yes" name="sleep_apnea_reported" value="有人说过">
+              <label for="apnea-yes" class="radio-label">有人说过</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="apnea-no" name="sleep_apnea_reported" value="没人提过">
+              <label for="apnea-no" class="radio-label">没人提过</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="apnea-unsure" name="sleep_apnea_reported" value="不知道">
+              <label for="apnea-unsure" class="radio-label">不知道</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">白天会不会突然很困或打瞌睡？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="sleepy-often" name="daytime_sleepiness" value="经常">
+              <label for="sleepy-often" class="radio-label">经常</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="sleepy-sometimes" name="daytime_sleepiness" value="偶尔">
+              <label for="sleepy-sometimes" class="radio-label">偶尔</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="sleepy-no" name="daytime_sleepiness" value="不会">
+              <label for="sleepy-no" class="radio-label">不会</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section F: 夜宵习惯 ═══ -->
+<div class="section">
+  <div class="section-header">⑥ 夜宵习惯</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">每周大概吃几次夜宵？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="snack-rare" name="late_snack_frequency" value="很少"
+                 data-expands="" onchange="handleRadioExpand(this, 'late_snack_frequency')">
+          <label for="snack-rare" class="radio-label">很少</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="snack-1-2" name="late_snack_frequency" value="1-2次"
+                 data-expands="sub-late-snack" onchange="handleRadioExpand(this, 'late_snack_frequency')">
+          <label for="snack-1-2" class="radio-label">1-2次</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="snack-3-5" name="late_snack_frequency" value="3-5次"
+                 data-expands="sub-late-snack" onchange="handleRadioExpand(this, 'late_snack_frequency')">
+          <label for="snack-3-5" class="radio-label">3-5次</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="snack-daily" name="late_snack_frequency" value="几乎每天"
+                 data-expands="sub-late-snack" onchange="handleRadioExpand(this, 'late_snack_frequency')">
+          <label for="snack-daily" class="radio-label">几乎每天</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-late-snack" class="sub-card-wrapper">
+      <div class="sub-card">
+
+        <div class="field">
+          <label class="field-label">一般几点吃？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="snack-time-8-9" name="late_snack_time" value="8-9点">
+              <label for="snack-time-8-9" class="radio-label">8-9点</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="snack-time-9-10" name="late_snack_time" value="9-10点">
+              <label for="snack-time-9-10" class="radio-label">9-10点</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="snack-time-10-11" name="late_snack_time" value="10-11点">
+              <label for="snack-time-10-11" class="radio-label">10-11点</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="snack-time-11plus" name="late_snack_time" value="11点以后">
+              <label for="snack-time-11plus" class="radio-label">11点以后</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">一般吃什么？（可多选）</label>
+          <div class="chip-group">
+            <div class="chip-item">
+              <input type="checkbox" id="snack-food-leftovers" name="late_snack_food" value="剩菜">
+              <label for="snack-food-leftovers" class="chip-label">剩菜</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="snack-food-noodle" name="late_snack_food" value="泡面">
+              <label for="snack-food-noodle" class="chip-label">泡面</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="snack-food-nuts" name="late_snack_food" value="坚果">
+              <label for="snack-food-nuts" class="chip-label">坚果</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="snack-food-fruit" name="late_snack_food" value="水果">
+              <label for="snack-food-fruit" class="chip-label">水果</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="snack-food-cook" name="late_snack_food" value="煮面煮粥">
+              <label for="snack-food-cook" class="chip-label">煮面煮粥</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="snack-food-biscuit" name="late_snack_food" value="饼干零食">
+              <label for="snack-food-biscuit" class="chip-label">饼干零食</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="snack-food-deli" name="late_snack_food" value="卤味">
+              <label for="snack-food-deli" class="chip-label">卤味</label>
+            </div>
+            <div class="chip-item">
+              <input type="checkbox" id="snack-food-other" name="late_snack_food" value="其他">
+              <label for="snack-food-other" class="chip-label">其他</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">吃完多久去睡？</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" id="snack-sleep-now" name="snack_to_sleep" value="马上睡">
+              <label for="snack-sleep-now" class="radio-label">马上睡</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="snack-sleep-30" name="snack_to_sleep" value="半小时左右">
+              <label for="snack-sleep-30" class="radio-label">半小时左右</label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" id="snack-sleep-1hr" name="snack_to_sleep" value="1小时以上">
+              <label for="snack-sleep-1hr" class="radio-label">1小时以上</label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section G: 烹饪关联 ═══ -->
+<div class="section">
+  <div class="section-header">⑦ 烹饪关联</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">你觉得家里做菜咸不咸？</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="salt-ok" name="salt_perception" value="刚好">
+          <label for="salt-ok" class="radio-label">刚好</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="salt-bit" name="salt_perception" value="有点咸">
+          <label for="salt-bit" class="radio-label">有点咸</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="salt-very" name="salt_perception" value="很咸">
+          <label for="salt-very" class="radio-label">很咸</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="salt-like" name="salt_perception" value="我喜欢咸的">
+          <label for="salt-like" class="radio-label">我喜欢咸的</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- 小贴士 -->
+<div class="tips-section">
+  <span class="tips-icon">🌱</span>
+  <span class="tips-text">吃夜宵尽量在睡前2小时吃完，给胃一点休息时间，反酸会好很多 🌙</span>
+</div>
+
+<!-- Copy -->
+<div class="copy-section">
+  <button class="btn-copy" onclick="copyResults()">复制结果，发给宸宸</button>
+  <p class="copy-hint">点击后自动复制，粘贴到微信发给宸宸就好</p>
+</div>
+
+<button class="btn-clear" onclick="clearForm()">清除已填内容</button>
+
+<div class="toast" id="toast">已复制！粘贴到微信发给宸宸</div>
+
+<script>
+// ─── Form constants ──────────────────────────────────────
+var FORM_ID = 'dad-metabolic-004';
+var FORM_PERSON = 'dad';
+
+// ─── Gout location sub-card generation ──────────────────
+var GOUT_LOCATIONS = [
+  { key: 'bigtoe', label: '大脚趾' },
+  { key: 'ankle', label: '脚踝' },
+  { key: 'knee', label: '膝盖' },
+  { key: 'finger', label: '手指' },
+  { key: 'wrist', label: '手腕' },
+  { key: 'other', label: '其他' }
+];
+
+function initGoutLocationSubCards() {
+  var container = document.getElementById('gout-location-sub-cards');
+
+  GOUT_LOCATIONS.forEach(function(loc) {
+    var html = '<div id="sub-gout-' + loc.key + '" class="sub-card-wrapper">' +
+      '<div class="sub-card">' +
+      '<div class="sub-card-title">' + loc.label + '</div>' +
+      '<div class="field">' +
+      '<label class="field-label">疼痛程度</label>' +
+      '<div class="radio-group">' +
+        '<div class="radio-card"><input type="radio" id="gout-' + loc.key + '-sev-0" name="gout_' + loc.key + '_severity" value="有点痛"><label for="gout-' + loc.key + '-sev-0" class="radio-label">有点痛</label></div>' +
+        '<div class="radio-card"><input type="radio" id="gout-' + loc.key + '-sev-1" name="gout_' + loc.key + '_severity" value="很痛"><label for="gout-' + loc.key + '-sev-1" class="radio-label">很痛</label></div>' +
+        '<div class="radio-card"><input type="radio" id="gout-' + loc.key + '-sev-2" name="gout_' + loc.key + '_severity" value="痛到不能走路"><label for="gout-' + loc.key + '-sev-2" class="radio-label">痛到不能走路</label></div>' +
+      '</div></div>' +
+      '<div class="field">' +
+      '<label class="field-label">有没有红肿？</label>' +
+      '<div class="radio-group">' +
+        '<div class="radio-card"><input type="radio" id="gout-' + loc.key + '-swell-0" name="gout_' + loc.key + '_swelling" value="有"><label for="gout-' + loc.key + '-swell-0" class="radio-label">有</label></div>' +
+        '<div class="radio-card"><input type="radio" id="gout-' + loc.key + '-swell-1" name="gout_' + loc.key + '_swelling" value="没有"><label for="gout-' + loc.key + '-swell-1" class="radio-label">没有</label></div>' +
+        '<div class="radio-card"><input type="radio" id="gout-' + loc.key + '-swell-2" name="gout_' + loc.key + '_swelling" value="不记得"><label for="gout-' + loc.key + '-swell-2" class="radio-label">不记得</label></div>' +
+      '</div></div>' +
+      '</div></div>';
+    container.insertAdjacentHTML('beforeend', html);
+  });
+}
+
+// ─── Alcohol type sub-card generation ───────────────────
+var ALCOHOL_TYPES = [
+  { key: 'baijiu', label: '白酒', amounts: ['一两以下', '二三两', '半斤', '半斤以上'] },
+  { key: 'beer', label: '啤酒', amounts: ['一瓶以下', '1-2瓶', '3瓶以上'] },
+  { key: 'wine', label: '红酒', amounts: ['一杯', '两三杯', '半瓶以上'] },
+  { key: 'rice', label: '米酒/黄酒', amounts: ['一小碗', '一大碗', '更多'] },
+  { key: 'medicinal', label: '药酒', amounts: ['一小杯', '两三杯', '更多'] }
+];
+
+function initAlcoholSubCards() {
+  var container = document.getElementById('alcohol-sub-cards');
+
+  ALCOHOL_TYPES.forEach(function(alc) {
+    var amountHtml = alc.amounts.map(function(amt, i) {
+      return '<div class="radio-card"><input type="radio" id="alc-' + alc.key + '-amt-' + i + '" name="alc_' + alc.key + '_amount" value="' + amt + '"><label for="alc-' + alc.key + '-amt-' + i + '" class="radio-label">' + amt + '</label></div>';
+    }).join('');
+
+    var html = '<div id="sub-alc-' + alc.key + '" class="sub-card-wrapper">' +
+      '<div class="sub-card">' +
+      '<div class="sub-card-title">' + alc.label + ' — 每次大概喝多少？</div>' +
+      '<div class="field">' +
+      '<div class="radio-group">' + amountHtml + '</div>' +
+      '</div></div></div>';
+    container.insertAdjacentHTML('beforeend', html);
+  });
+}
+
+// ─── localStorage ────────────────────────────────────────
+function saveState() {
+  var state = {};
+  document.querySelectorAll('input[type="radio"]').forEach(function(el) {
+    if (el.checked && el.name) state['r:' + el.name] = el.value;
+  });
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+    if (el.id) state['c:' + el.id] = el.checked;
+  });
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="month"]').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key) state['i:' + key] = el.value;
+  });
+  document.querySelectorAll('select').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key) state['s:' + key] = el.value;
+  });
+  document.querySelectorAll('.med-list[data-max]').forEach(function(list) {
+    state['medcount:' + list.id] = list.querySelectorAll('.med-row').length;
+  });
+  try { localStorage.setItem(FORM_ID, JSON.stringify(state)); } catch(e) {}
+}
+
+function restoreState() {
+  var state;
+  try { state = JSON.parse(localStorage.getItem(FORM_ID)); } catch(e) {}
+  if (!state) return;
+
+  document.querySelectorAll('.med-list[data-max]').forEach(function(list) {
+    var count = state['medcount:' + list.id] || 1;
+    while (list.querySelectorAll('.med-row').length < count) {
+      _appendMedRow(list);
+    }
+  });
+
+  document.querySelectorAll('input[type="radio"]').forEach(function(el) {
+    if (el.name && state['r:' + el.name] === el.value) {
+      el.checked = true;
+      if (el.dataset.expands !== undefined) handleRadioExpand(el, el.name, true);
+    }
+  });
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+    if (el.id && state['c:' + el.id]) {
+      el.checked = true;
+      if (el.dataset.expands) openSubCard(el.dataset.expands);
+    }
+  });
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="month"]').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key && state['i:' + key] !== undefined) el.value = state['i:' + key];
+  });
+  document.querySelectorAll('select').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key && state['s:' + key] !== undefined) el.value = state['s:' + key];
+  });
+}
+
+function clearForm() {
+  if (!confirm('确定要清除所有已填内容吗？')) return;
+  try { localStorage.removeItem(FORM_ID); } catch(e) {}
+  location.reload();
+}
+
+document.addEventListener('change', saveState);
+document.addEventListener('input', saveState);
+
+// ─── Conditional expansion ───────────────────────────────
+function openSubCard(id) {
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+
+function closeSubCard(id) {
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('open');
+  el.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(function(i) { i.checked = false; });
+  el.querySelectorAll('input[type="text"], input[type="number"], input[type="month"]').forEach(function(i) { i.value = ''; });
+  el.querySelectorAll('select').forEach(function(s) { s.selectedIndex = 0; });
+  el.querySelectorAll('.sub-card-wrapper').forEach(function(nested) { nested.classList.remove('open'); });
+}
+
+function handleChipExpand(checkbox) {
+  if (!checkbox.dataset.expands) return;
+  checkbox.checked ? openSubCard(checkbox.dataset.expands) : closeSubCard(checkbox.dataset.expands);
+}
+
+function handleRadioExpand(radio, radioName, silent) {
+  var toOpen = (radio.checked && radio.dataset.expands) ? radio.dataset.expands : null;
+  document.querySelectorAll('input[name="' + radioName + '"][data-expands]').forEach(function(r) {
+    if (!r.checked && r.dataset.expands && r.dataset.expands !== toOpen) {
+      closeSubCard(r.dataset.expands);
+    }
+  });
+  if (toOpen) openSubCard(toOpen);
+  if (!toOpen) {
+    document.querySelectorAll('input[name="' + radioName + '"][data-expands]').forEach(function(r) {
+      if (r.dataset.expands) closeSubCard(r.dataset.expands);
+    });
+  }
+}
+
+// ─── Medication rows (with effect select support) ────────
+function _appendMedRow(list) {
+  var idx = list.querySelectorAll('.med-row').length;
+  var max = parseInt(list.dataset.max) || 8;
+  if (idx >= max) return;
+  var prefix = list.dataset.prefix || 'med';
+  var phName = list.dataset.phName || '药名';
+  var noteType = list.dataset.noteType || 'text';
+  var hasNote = list.dataset.hasNote !== 'false';
+
+  var row = document.createElement('div');
+  row.className = 'med-row';
+  var html = '<input type="text" class="med-name" placeholder="' + phName + '" name="' + prefix + '_' + idx + '_name">' +
+    '<select class="med-freq" name="' + prefix + '_' + idx + '_freq">' +
+    '<option value="">频率</option><option value="每天">每天</option><option value="每周">每周</option>' +
+    '<option value="需要时">需要时</option><option value="已停用">已停用</option></select>';
+  if (hasNote) {
+    if (noteType === 'effect') {
+      html += '<select class="med-note" name="' + prefix + '_' + idx + '_effect">' +
+        '<option value="">效果</option><option value="有效">有效</option>' +
+        '<option value="没什么用">没什么用</option><option value="不确定">不确定</option></select>';
+    } else {
+      var phNote = list.dataset.phNote || '备注';
+      html += '<input type="text" class="med-note" placeholder="' + phNote + '" name="' + prefix + '_' + idx + '_note">';
+    }
+  }
+  html += '<button type="button" class="btn-remove-med" onclick="removeMedRow(this)">×</button>';
+  row.innerHTML = html;
+  list.appendChild(row);
+
+  if (list.dataset.addBtn) {
+    var btn = document.getElementById(list.dataset.addBtn);
+    if (btn) btn.disabled = list.querySelectorAll('.med-row').length >= max;
+  }
+}
+
+function addMedRow(listId) {
+  var list = document.getElementById(listId);
+  if (!list) return;
+  _appendMedRow(list);
+  saveState();
+}
+
+function removeMedRow(btn) {
+  var row = btn.closest('.med-row');
+  var list = row.closest('.med-list');
+  if (!list || list.querySelectorAll('.med-row').length <= 1) return;
+  row.remove();
+  var prefix = list.dataset.prefix || 'med';
+  var noteType = list.dataset.noteType || 'text';
+  list.querySelectorAll('.med-row').forEach(function(r, i) {
+    var n = r.querySelector('.med-name'); if (n) n.name = prefix + '_' + i + '_name';
+    var f = r.querySelector('.med-freq'); if (f) f.name = prefix + '_' + i + '_freq';
+    var o = r.querySelector('.med-note');
+    if (o) o.name = prefix + '_' + i + '_' + (noteType === 'effect' ? 'effect' : 'note');
+  });
+  if (list.dataset.addBtn) {
+    var btn2 = document.getElementById(list.dataset.addBtn);
+    if (btn2) btn2.disabled = false;
+  }
+  saveState();
+}
+
+// ─── Copy output ─────────────────────────────────────────
+function collectFormData() {
+  var data = { _meta: {} };
+  var now = new Date();
+  data._meta.form_id = FORM_ID;
+  data._meta.person = FORM_PERSON;
+  data._meta.submitted = now.toISOString().slice(0, 10);
+
+  document.querySelectorAll('input[type="radio"]:checked').forEach(function(el) {
+    if (el.name) data[el.name] = el.value;
+  });
+  document.querySelectorAll('input[type="checkbox"][name]').forEach(function(el) {
+    if (!data[el.name]) data[el.name] = [];
+    if (el.checked) data[el.name].push(el.value);
+  });
+  document.querySelectorAll('input[type="text"][name], input[type="number"][name], input[type="month"][name]').forEach(function(el) {
+    if (el.value !== '') data[el.name] = el.value;
+  });
+  document.querySelectorAll('select[name]').forEach(function(el) {
+    if (el.value !== '') data[el.name] = el.value;
+  });
+  return data;
+}
+
+function buildPlainText(data) {
+  var now = new Date();
+  var lines = [
+    '📋 代谢与消化健康评估  ' + now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日',
+    '填表人：爸爸（或妈妈代填）',
+    ''
+  ];
+
+  function add(label, key) {
+    var v = data[key];
+    if (v === undefined) return;
+    var val = Array.isArray(v) ? (v.length ? v.join('、') : '') : v;
+    if (!val) return;
+    lines.push(label + '：' + val);
+  }
+
+  function addMeds(prefix, label) {
+    for (var i = 0; i < 8; i++) {
+      if (!data[prefix + '_' + i + '_name']) continue;
+      var row = '  ' + label + (i+1) + '：' + data[prefix + '_' + i + '_name'];
+      if (data[prefix + '_' + i + '_freq']) row += '（' + data[prefix + '_' + i + '_freq'] + '）';
+      if (data[prefix + '_' + i + '_effect']) row += ' 效果：' + data[prefix + '_' + i + '_effect'];
+      if (data[prefix + '_' + i + '_note']) row += ' ' + data[prefix + '_' + i + '_note'];
+      lines.push(row);
+    }
+  }
+
+  // Section A
+  lines.push('【痛风发作史】');
+  add('痛风发作', 'gout_history');
+  if (data.gout_history && data.gout_history !== '从没有') {
+    add('最近发作时间', 'gout_last_date');
+    add('发作部位', 'gout_locations');
+    GOUT_LOCATIONS.forEach(function(loc) {
+      if (data['gout_' + loc.key + '_severity'] || data['gout_' + loc.key + '_swelling']) {
+        lines.push('  ' + loc.label + '：');
+        if (data['gout_' + loc.key + '_severity']) lines.push('    疼痛程度：' + data['gout_' + loc.key + '_severity']);
+        if (data['gout_' + loc.key + '_swelling']) lines.push('    红肿：' + data['gout_' + loc.key + '_swelling']);
+      }
+    });
+    add('每次持续', 'gout_duration');
+    add('处理方式', 'gout_treatment');
+    add('长期降尿酸药', 'uric_acid_med');
+    if (data.uric_acid_med === '有' || data.uric_acid_med === '以前吃过现在停了') {
+      addMeds('uric_med', '降尿酸药');
+    }
+  }
+  lines.push('');
+
+  // Section B
+  lines.push('【血糖管理】');
+  add('医生诊断', 'blood_sugar_diagnosis');
+  add('降糖药', 'sugar_medication');
+  if (data.sugar_medication === '有' || data.sugar_medication === '以前吃过') {
+    addMeds('sugar_med', '降糖药');
+  }
+  add('血糖仪', 'glucometer');
+  if (data.fasting_glucose) lines.push('空腹血糖：' + data.fasting_glucose + ' mmol/L');
+  if (data.postmeal_glucose) lines.push('餐后血糖：' + data.postmeal_glucose + ' mmol/L');
+  add('血糖相关症状', 'blood_sugar_symptoms');
+  lines.push('');
+
+  // Section C
+  lines.push('【消化道症状】');
+  lines.push('反酸/烧心：');
+  add('  频率', 'reflux_frequency');
+  if (data.reflux_frequency && data.reflux_frequency !== '偶尔') {
+    add('  发作时间', 'reflux_triggers');
+    add('  严重程度', 'reflux_severity');
+    add('  吃过胃药', 'stomach_med_taken');
+    if (data.stomach_med_taken === '有') addMeds('stomach_med', '胃药');
+  }
+  lines.push('拉肚子：');
+  add('  频率', 'diarrhea_frequency');
+  if (data.diarrhea_frequency && data.diarrhea_frequency !== '很少') {
+    add('  诱因', 'diarrhea_triggers');
+    add('  腹痛', 'diarrhea_pain');
+  }
+  lines.push('');
+
+  // Section D
+  lines.push('【饮酒习惯】');
+  add('喝酒频率', 'drinking_frequency');
+  if (data.drinking_frequency && data.drinking_frequency !== '不喝') {
+    add('酒类', 'alcohol_types');
+    ALCOHOL_TYPES.forEach(function(alc) {
+      if (data['alc_' + alc.key + '_amount']) {
+        lines.push('  ' + alc.label + '：' + data['alc_' + alc.key + '_amount']);
+      }
+    });
+    add('喝酒后不适', 'alcohol_effects');
+    add('喝酒场合', 'alcohol_context');
+  }
+  lines.push('');
+
+  // Section E
+  lines.push('【睡眠】');
+  add('上床时间', 'bedtime');
+  add('睡眠时长', 'sleep_hours');
+  add('睡眠问题', 'sleep_problems');
+  if (data.sleep_onset_time) lines.push('  入睡时间：' + data.sleep_onset_time);
+  if (data.night_wake_count) lines.push('  夜醒次数：' + data.night_wake_count);
+  if (data.night_wake_reback) lines.push('  再入睡：' + data.night_wake_reback);
+  if (data.sleep_apnea_reported) lines.push('  呼吸暂停：' + data.sleep_apnea_reported);
+  if (data.daytime_sleepiness) lines.push('  白天犯困：' + data.daytime_sleepiness);
+  lines.push('');
+
+  // Section F
+  lines.push('【夜宵习惯】');
+  add('夜宵频率', 'late_snack_frequency');
+  if (data.late_snack_frequency && data.late_snack_frequency !== '很少') {
+    add('吃的时间', 'late_snack_time');
+    add('吃什么', 'late_snack_food');
+    add('吃完到睡觉', 'snack_to_sleep');
+  }
+  lines.push('');
+
+  // Section G
+  lines.push('【烹饪关联】');
+  add('觉得家里菜咸不咸', 'salt_perception');
+
+  return lines.join('\n');
+}
+
+function toYAML(obj, depth) {
+  depth = depth || 0;
+  var pad = '  '.repeat(depth);
+  var lines = [];
+  for (var k in obj) {
+    if (!obj.hasOwnProperty(k)) continue;
+    var v = obj[k];
+    if (Array.isArray(v)) {
+      if (v.length === 0) {
+        lines.push(pad + k + ': []');
+      } else {
+        lines.push(pad + k + ':');
+        v.forEach(function(item) { lines.push(pad + '  - ' + item); });
+      }
+    } else if (v !== null && typeof v === 'object') {
+      lines.push(pad + k + ':');
+      lines.push(toYAML(v, depth + 1));
+    } else {
+      var safe = (typeof v === 'string' && /[:#\[\]{}&*!|>'"%@`]/.test(v))
+        ? '"' + v.replace(/"/g, '\\"') + '"' : v;
+      lines.push(pad + k + ': ' + safe);
+    }
+  }
+  return lines.join('\n');
+}
+
+function copyResults() {
+  var data = collectFormData();
+  var plain = buildPlainText(data);
+  var yaml = toYAML(data);
+  var separator = '\n\n———— 以下是宸宸用的数据，不用管 ————\n\n';
+  var full = plain + separator + yaml;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(full).then(showToast).catch(function() { fallbackCopy(full); });
+  } else {
+    fallbackCopy(full);
+  }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  showToast();
+}
+
+function showToast() {
+  var t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+// ─── Init ─────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  initGoutLocationSubCards();
+  initAlcoholSubCards();
+  restoreState();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>宸宸的健康快照</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+    background: #FAF8F4;
+    color: #2D1F15;
+    line-height: 1.75;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :root {
+    --clay:         #9B6743;
+    --clay-dark:    #7A4E2E;
+    --clay-light:   #FBF0E6;
+    --clay-mid:     #E5CEBC;
+    --sage:         #4A8B62;
+    --sage-light:   #EBF5EF;
+    --sage-mid:     #BFDFCA;
+    --amber:        #A67C1A;
+    --amber-light:  #FFF8E2;
+    --amber-mid:    #DFCB8A;
+    --card:         #FFFFFF;
+    --bg:           #FAF8F4;
+    --text:         #2D1F15;
+    --muted:        #8A7260;
+    --border:       #EDE4D8;
+    --shadow:       rgba(60, 30, 10, 0.07);
+  }
+
+  .page {
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 56px;
+  }
+
+  /* ─── Header ─── */
+  .header {
+    background: linear-gradient(160deg, #7A4E2E 0%, #B8825A 100%);
+    color: #fff;
+    padding: 52px 28px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -24px; left: -24px;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header-eyebrow {
+    font-size: 12px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    opacity: 0.65;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .header-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .header-sub {
+    font-size: 14px;
+    opacity: 0.7;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+    position: relative;
+  }
+
+  /* ─── Body ─── */
+  .body {
+    padding: 0 14px;
+    margin-top: -18px;
+    position: relative;
+  }
+
+  /* ─── Summary card ─── */
+  .summary-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 24px 22px 22px;
+    box-shadow: 0 4px 22px var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .summary-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--sage);
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px var(--sage-light);
+  }
+  .status-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--sage);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .summary-text {
+    font-size: 15.5px;
+    color: var(--text);
+    line-height: 1.9;
+  }
+  .summary-text strong { color: var(--clay); }
+
+  /* ─── Section labels ─── */
+  .section-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-left: 2px;
+  }
+  .section-wrap { margin-bottom: 26px; }
+
+  /* ─── Metric grid (2-col) ─── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .metric-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 15px 14px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .metric-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .metric-icon {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--clay-light);
+    flex-shrink: 0;
+  }
+  .metric-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+  .badge-ok   { background: var(--sage-light);  color: var(--sage);  }
+  .badge-warn { background: var(--amber-light); color: var(--amber); }
+  .metric-name  { font-size: 12px;   color: var(--muted); margin-bottom: 2px; line-height: 1.3; }
+  .metric-value { font-size: 21px;   font-weight: 700; color: var(--text); line-height: 1.2; letter-spacing: -0.5px; }
+  .metric-unit  { font-size: 10.5px; font-weight: 400; color: var(--muted); margin-left: 1px; }
+  .metric-ref   { font-size: 11px;   color: var(--muted); margin-top: 3px; line-height: 1.3; }
+
+  /* ─── Wide good-news card ─── */
+  .good-card {
+    background: var(--sage-light);
+    border: 1.5px solid var(--sage-mid);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .good-check {
+    width: 28px; height: 28px; min-width: 28px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .good-title  { font-size: 14px;   font-weight: 700; color: var(--text); margin-bottom: 2px; line-height: 1.35; }
+  .good-detail { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── Attention cards ─── */
+  .attn-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px 16px;
+    border: 1.5px solid var(--border);
+    border-left: 4px solid var(--amber);
+    box-shadow: 0 2px 8px var(--shadow);
+    margin-bottom: 10px;
+  }
+  .attn-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .attn-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .attn-tag {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 100px;
+    background: var(--clay-light); color: var(--clay);
+    white-space: nowrap;
+  }
+  .attn-values {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .attn-val-num   { font-size: 20px; font-weight: 700; color: var(--amber); line-height: 1.2; letter-spacing: -0.5px; }
+  .attn-val-label { font-size: 11px; color: var(--muted); line-height: 1.4; margin-top: 2px; }
+  .attn-note {
+    font-size: 13px; color: var(--muted); line-height: 1.75;
+    padding: 10px 12px;
+    background: var(--amber-light);
+    border-radius: 9px;
+  }
+  .attn-note strong { color: var(--text); }
+
+  /* ─── Protocol card ─── */
+  .protocol-card {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+    overflow: hidden;
+  }
+  .protocol-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .protocol-item:last-child { border-bottom: none; }
+  .protocol-pip {
+    width: 8px; height: 8px; min-width: 8px;
+    border-radius: 50%;
+    background: var(--sage);
+    margin-top: 6px;
+  }
+  .protocol-name  { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; line-height: 1.3; }
+  .protocol-dose  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .protocol-goal  {
+    display: inline-block; margin-top: 5px;
+    font-size: 10.5px; font-weight: 600;
+    color: var(--sage); background: var(--sage-light);
+    border-radius: 100px; padding: 1px 7px;
+  }
+  .protocol-goal.clay { color: var(--clay); background: var(--clay-light); }
+
+  /* ─── Next checkup card ─── */
+  .next-card {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+    overflow: hidden;
+  }
+  .next-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .next-item:last-child { border-bottom: none; }
+  .next-bullet {
+    width: 22px; height: 22px; min-width: 22px;
+    border-radius: 50%;
+    background: var(--clay-light);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .next-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .next-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+
+  /* ─── Footer ─── */
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 28px 16px 0;
+  }
+  .footer-links {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .footer-link {
+    display: inline-block;
+    padding: 8px 14px;
+    background: var(--clay-light);
+    color: var(--clay);
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid var(--clay-mid);
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+  .footer-link:active { opacity: 0.75; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ Header ═══ -->
+  <div class="header">
+    <div class="header-eyebrow">健康评估报告中心</div>
+    <div class="header-title">宸宸的健康快照</div>
+    <div class="header-sub">爸爸妈妈随时可以看</div>
+    <div class="header-badge">2026年5月 · Superpower体检</div>
+  </div>
+
+  <div class="body">
+
+    <!-- ═══ 一句话总结 ═══ -->
+    <div class="summary-card">
+      <div class="summary-status">
+        <div class="status-dot"></div>
+        <div class="status-label">整体状态良好</div>
+      </div>
+      <p class="summary-text">
+        整体代谢健康，血糖、炎症、肝肾都没有问题。<br>
+        <strong>胆固醇轻微偏高</strong>，已经在主动管理中，不用担心。<br>
+        这次是在美国专业机构 Superpower 做的全面血液检测。
+      </p>
+    </div>
+
+    <!-- ═══ 好消息 ═══ -->
+    <div class="section-wrap">
+      <div class="section-label">好消息</div>
+
+      <div class="metric-grid">
+
+        <!-- HbA1c -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <div class="metric-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+            </div>
+            <span class="metric-badge badge-ok">达标</span>
+          </div>
+          <div class="metric-name">血糖 HbA1c</div>
+          <div class="metric-value">5.6<span class="metric-unit">%</span></div>
+          <div class="metric-ref">参考 &lt;5.7%</div>
+        </div>
+
+        <!-- Fasting glucose -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <div class="metric-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <span class="metric-badge badge-ok">正常</span>
+          </div>
+          <div class="metric-name">空腹血糖</div>
+          <div class="metric-value">75<span class="metric-unit">mg/dL</span></div>
+          <div class="metric-ref">参考 65–99</div>
+        </div>
+
+        <!-- hs-CRP -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <div class="metric-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <span class="metric-badge badge-ok">极低</span>
+          </div>
+          <div class="metric-name">炎症 hs-CRP</div>
+          <div class="metric-value">&lt;0.2<span class="metric-unit">mg/L</span></div>
+          <div class="metric-ref">参考 &lt;1.0</div>
+        </div>
+
+        <!-- HDL -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <div class="metric-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <span class="metric-badge badge-ok">优秀</span>
+          </div>
+          <div class="metric-name">好胆固醇 HDL</div>
+          <div class="metric-value">91<span class="metric-unit">mg/dL</span></div>
+          <div class="metric-ref">参考 ≥40</div>
+        </div>
+
+        <!-- TSH -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <div class="metric-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <span class="metric-badge badge-ok">正常</span>
+          </div>
+          <div class="metric-name">甲状腺 TSH</div>
+          <div class="metric-value">1.96<span class="metric-unit">mIU/L</span></div>
+          <div class="metric-ref">参考 0.40–4.50</div>
+        </div>
+
+        <!-- Liver -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <div class="metric-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-4m-6 0h6"/></svg>
+            </div>
+            <span class="metric-badge badge-ok">正常</span>
+          </div>
+          <div class="metric-name">肝脏 AST/ALT</div>
+          <div class="metric-value">20<span class="metric-unit">/17</span></div>
+          <div class="metric-ref">参考 10–40 / 9–46</div>
+        </div>
+
+      </div>
+
+      <div class="good-card">
+        <div class="good-check">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A8B62" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <div class="good-title">肝脏、肾脏、血液全部正常</div>
+          <div class="good-detail">肌酐 1.18 · eGFR 87 · 血红蛋白 15.2 · 白细胞 4.3 — 均在健康范围</div>
+        </div>
+      </div>
+
+      <div class="good-card">
+        <div class="good-check">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A8B62" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <div class="good-title">睾酮、铁蛋白、甘油三酯均正常</div>
+          <div class="good-detail">睾酮 419 ng/dL · 铁蛋白 95 ng/mL · 甘油三酯 66 mg/dL（优秀）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 需要关注 ═══ -->
+    <div class="section-wrap">
+      <div class="section-label">需要关注 — 正在管理中</div>
+
+      <div class="attn-card">
+        <div class="attn-top">
+          <div class="attn-title">总胆固醇 / LDL</div>
+          <div class="attn-tag">已在调整中</div>
+        </div>
+        <div class="attn-values">
+          <div>
+            <div class="attn-val-num">218</div>
+            <div class="attn-val-label">总胆固醇 mg/dL<br>参考 &lt;200</div>
+          </div>
+          <div>
+            <div class="attn-val-num">112</div>
+            <div class="attn-val-label">LDL mg/dL<br>参考 &lt;100</div>
+          </div>
+          <div>
+            <div class="attn-val-num" style="color:var(--sage)">85</div>
+            <div class="attn-val-label">ApoB mg/dL<br>参考 &lt;90 ✓</div>
+          </div>
+        </div>
+        <div class="attn-note">
+          <strong>已在积极管理：</strong>开始补充植物甾醇，可降低 LDL 约8–12%。好胆固醇 HDL 91（非常优秀），炎症指标接近零，整体心血管风险很低。4–6个月后复查。
+        </div>
+      </div>
+
+      <div class="attn-card">
+        <div class="attn-top">
+          <div class="attn-title">T3 Uptake（甲状腺辅助指标）</div>
+          <div class="attn-tag">下次复查跟踪</div>
+        </div>
+        <div class="attn-values">
+          <div>
+            <div class="attn-val-num">36</div>
+            <div class="attn-val-label">T3 Uptake %<br>参考 22–35%</div>
+          </div>
+          <div>
+            <div class="attn-val-num" style="color:var(--sage)">1.96</div>
+            <div class="attn-val-label">TSH mIU/L<br>甲状腺功能正常</div>
+          </div>
+        </div>
+        <div class="attn-note">
+          <strong>没有问题，只是监测：</strong>只超出参考值1个百分点，TSH完全正常，工作压力大会让这个数字轻微升高。已经开始补充硒来支持甲状腺，3个月后复查。
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 行动中 ═══ -->
+    <div class="section-wrap">
+      <div class="section-label">行动中 — 当前补剂方案</div>
+      <div class="protocol-card">
+        <div class="protocol-item">
+          <div class="protocol-pip"></div>
+          <div>
+            <div class="protocol-name">植物甾醇 CholestePure</div>
+            <div class="protocol-dose">每天2g，分两次随最大的两餐服用</div>
+            <span class="protocol-goal">降低 LDL 胆固醇</span>
+          </div>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-pip"></div>
+          <div>
+            <div class="protocol-name">辅酶Q10 CoQ10（Ubiquinol）</div>
+            <div class="protocol-dose">每天100mg，随早餐或午餐</div>
+            <span class="protocol-goal">心血管抗氧化，运动恢复</span>
+          </div>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-pip"></div>
+          <div>
+            <div class="protocol-name">硒 Selenomethionine</div>
+            <div class="protocol-dose">每天200mcg，随午餐或晚餐</div>
+            <span class="protocol-goal">甲状腺辅酶支持</span>
+          </div>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-pip"></div>
+          <div>
+            <div class="protocol-name">南非醉茄 Ashwagandha</div>
+            <div class="protocol-dose">每天500mg，随早餐，8周一周期</div>
+            <span class="protocol-goal">皮质醇管理，专注力</span>
+          </div>
+        </div>
+        <div class="protocol-item">
+          <div class="protocol-pip" style="background:var(--clay)"></div>
+          <div>
+            <div class="protocol-name">认知恢复结构</div>
+            <div class="protocol-dose">90分钟专注块 + 下午10分钟呼吸练习</div>
+            <span class="protocol-goal clay">压力管理，甲状腺保护</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 下次体检计划 ═══ -->
+    <div class="section-wrap">
+      <div class="section-label">下次体检计划</div>
+      <div class="next-card">
+        <div class="next-item">
+          <div class="next-bullet">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="next-text">4–6个月后复查血脂全套</div>
+            <div class="next-sub">看植物甾醇的效果，LDL 目标降到 100 以下</div>
+          </div>
+        </div>
+        <div class="next-item">
+          <div class="next-bullet">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="next-text">同时复查甲状腺全套</div>
+            <div class="next-sub">确认 T3 Uptake 有没有继续升高，观察硒的效果</div>
+          </div>
+        </div>
+        <div class="next-item">
+          <div class="next-bullet">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="next-text">加测 Cystatin C 和维生素 D</div>
+            <div class="next-sub">肾功能精准验证，维生素 D 优化到 50–70 ng/mL</div>
+          </div>
+        </div>
+        <div class="next-item">
+          <div class="next-bullet">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B6743" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="next-text">计划时间：2026年10–11月</div>
+            <div class="next-sub">通过 Superpower 平台预约，上门抽血，不用去医院</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ Footer ═══ -->
+  <div class="footer">
+    <div class="footer-links">
+      <a class="footer-link" href="https://chevis-zhou.github.io/mom-health/index.html">
+        👈 妈妈的健康报告
+      </a>
+      <a class="footer-link" href="https://chevis-zhou.github.io/family-health-forms/index.html">
+        爸爸的健康档案 👉
+      </a>
+    </div>
+    健康评估报告中心 · 由宸宸整理维护
+  </div>
+
+</div>
+</body>
+</html>

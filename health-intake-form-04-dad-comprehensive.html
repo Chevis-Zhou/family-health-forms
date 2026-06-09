@@ -1,567 +1,987 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>爸爸健康综合基线采集表</title>
-    <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --focus-ring: rgba(37, 99, 235, 0.3);
-            --danger-color: #ef4444;
-            --success-color: #10b981;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>爸爸综合健康基线采集表</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+      background: #FFF5EE;
+      color: #333;
+      font-size: 16px;
+      line-height: 1.6;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding: 1rem;
-            -webkit-font-smoothing: antialiased;
-        }
+    /* ── Header ── */
+    .header {
+      position: relative;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-            padding-bottom: 2rem;
-        }
+    .header-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 28%;
+    }
 
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 2rem 1.5rem;
-            text-align: center;
-        }
+    .header-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 35%),
+        linear-gradient(to top, rgba(150,45,20,0.82) 0%, transparent 55%);
+    }
 
-        h1 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
+    .header-content {
+      position: relative;
+      padding: 28px 16px 22px;
+    }
 
-        .subtitle {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
+    .header-period {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
 
-        .notice {
-            background-color: #eff6ff;
-            border-left: 4px solid var(--primary-color);
-            padding: 1rem;
-            margin: 1.5rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            color: #1e3a8a;
-        }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
 
-        form {
-            padding: 0 1.5rem;
-        }
+    .header-subtitle {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 6px;
+    }
 
-        .section {
-            margin-bottom: 2.5rem;
-        }
+    .header-caption {
+      position: absolute;
+      bottom: 10px;
+      right: 14px;
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
 
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
+    .back-link {
+      position: absolute;
+      top: 14px; left: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-link:active { opacity: 0.5; }
 
-        .question {
-            margin-bottom: 1.5rem;
-            background: #fff;
-        }
+    /* ── 体检报告 Banner ── */
+    .exam-banner {
+      margin: 12px 12px 0;
+      background: #EBF4FB;
+      border: 1.5px solid #C2DDF0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-        label.q-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            color: var(--text-main);
-        }
+    .exam-banner-icon { font-size: 26px; flex-shrink: 0; }
 
-        .help-text {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 0.8rem;
-        }
+    .exam-banner-text {
+      font-size: 14px;
+      color: #2B6A9B;
+      font-weight: 500;
+      line-height: 1.45;
+    }
 
-        /* Inputs */
-        input[type="text"],
-        input[type="number"],
-        textarea {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.2s;
-            background-color: #f8fafc;
-        }
+    /* ── Sections ── */
+    .section {
+      background: white;
+      margin: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
 
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--focus-ring);
-            background-color: #fff;
-        }
+    .section-header {
+      background: #FAF0EC;
+      padding: 13px 16px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #AD5540;
+      border-bottom: 1px solid #F0DDD8;
+    }
 
-        .input-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    .section-body { padding: 16px; }
 
-        .unit {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
+    .section-note {
+      font-size: 12px;
+      color: #B0A09A;
+      margin-bottom: 14px;
+    }
 
-        /* Checkboxes & Radios */
-        .options-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
+    .field { margin-bottom: 20px; }
+    .field:last-child { margin-bottom: 0; }
 
-        .option-label {
-            display: flex;
-            align-items: flex-start;
-            padding: 0.8rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            background-color: #f8fafc;
-        }
+    label.field-label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
 
-        .option-label:hover {
-            background-color: #f1f5f9;
-        }
+    /* ── Text/Number inputs ── */
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 9px;
+      font-size: 16px;
+      font-family: inherit;
+      color: #333;
+      background: #FAFAFA;
+      -webkit-appearance: none;
+      appearance: none;
+    }
 
-        .option-label.selected {
-            border-color: var(--primary-color);
-            background-color: #eff6ff;
-        }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #D4735B;
+      background: white;
+    }
 
-        input[type="checkbox"],
-        input[type="radio"] {
-            margin-top: 0.25rem;
-            margin-right: 0.75rem;
-            width: 1.1rem;
-            height: 1.1rem;
-            accent-color: var(--primary-color);
-            flex-shrink: 0;
-        }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
 
-        .other-input {
-            margin-top: 0.5rem;
-            display: none;
-        }
+    .input-unit-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .option-label.selected + .other-input {
-            display: block;
-        }
+    .input-unit-wrapper input { flex: 1; }
 
-        /* Buttons */
-        .btn-submit {
-            width: 100%;
-            padding: 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 1rem;
-        }
+    .input-unit {
+      font-size: 13px;
+      color: #999;
+      flex-shrink: 0;
+    }
 
-        .btn-submit:hover {
-            background-color: var(--primary-hover);
-        }
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
 
-        /* Output Area */
-        #result-area {
-            display: none;
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: #f1f5f9;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
+    .input-row:last-child { margin-bottom: 0; }
 
-        #result-text {
-            width: 100%;
-            height: 200px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-            border: 1px solid #cbd5e1;
-            white-space: pre-wrap;
-        }
+    /* ── Chip radio (single-select) ── */
+    .radio-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-        .btn-copy {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #10b981;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
+    .radio-card { position: relative; }
 
-        .btn-copy.copied {
-            background-color: #059669;
-        }
-    </style>
+    .radio-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-card .radio-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #777;
+      background: #FAFAFA;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .radio-card input:checked + .radio-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #C05040;
+    }
+
+    /* ── Chip checkbox (multi-select) ── */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-item { position: relative; }
+
+    .chip-item input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .chip-item .chip-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border: 1.5px solid #E0D5D0;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #777;
+      background: #FAFAFA;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .chip-item input:checked + .chip-label {
+      border-color: #D4735B;
+      background: #FFF0EB;
+      color: #C05040;
+    }
+
+    /* ── Conditional sub-cards ── */
+    .sub-card-wrapper {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.25s ease;
+    }
+
+    .sub-card-wrapper.open {
+      max-height: 800px;
+      opacity: 1;
+    }
+
+    .sub-card {
+      margin-top: 8px;
+      background: #FFF8F6;
+      border-left: 3px solid #D4735B;
+      border-radius: 0 10px 10px 0;
+      padding: 14px;
+    }
+
+    .sub-card input[type="text"] {
+      font-size: 14px;
+      padding: 10px 12px;
+    }
+
+    /* ── 小贴士 ── */
+    .tips-section {
+      margin: 12px;
+      background: #FFF8E7;
+      border: 1.5px solid #F0DEB0;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tips-icon { font-size: 24px; flex-shrink: 0; }
+
+    .tips-text {
+      font-size: 14px;
+      color: #7A5A00;
+      line-height: 1.55;
+    }
+
+    /* ── Copy + Clear ── */
+    .copy-section { padding: 12px 12px 0; }
+
+    .btn-copy {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      background: #D4735B;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 1px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-copy:active { background: #BA5A43; }
+
+    .copy-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #BBB;
+      margin-top: 10px;
+    }
+
+    .btn-clear {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 18px 12px calc(36px + env(safe-area-inset-bottom, 0px));
+      font-size: 12px;
+      color: #CCC;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.72);
+      color: white;
+      padding: 11px 24px;
+      border-radius: 22px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+
+    .toast.show { opacity: 1; }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>爸爸健康综合基线采集表</h1>
-    </header>
-
-    <div class="notice">
-        <strong>提示：</strong>这份表单是为了全面了解目前的身体代谢和日常状态。遇到不确定的数字（比如体检单找不到），可以先跳过或者留空，之后找到了再补。直接选好填好，最后点提交复制发给我就行。
-    </div>
-
-    <form id="intake-form">
-
-        <!-- Section 1: Lab Metrics -->
-        <div class="section">
-            <div class="section-title">第一部分：近期体检核心指标</div>
-            <span class="help-text">请参考爸单位最近一次的体检报告</span>
-
-            <div class="question">
-                <label class="q-label">1. 体检时间</label>
-                <span class="help-text">这份报告大概是哪个月份的？（比如：2026年3月）</span>
-                <input type="text" name="checkup_date" placeholder="如：2026年3月">
-            </div>
-
-            <div class="question">
-                <label class="q-label">2. 空腹血糖 (Fasting Glucose)</label>
-                <div class="input-group">
-                    <input type="number" step="0.01" name="fasting_glucose" placeholder="如：6.5">
-                    <span class="unit">mmol/L</span>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">3. 糖化血红蛋白 (HbA1c)</label>
-                <div class="input-group">
-                    <input type="number" step="0.1" name="hba1c" placeholder="如：7.0">
-                    <span class="unit">%</span>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">4. 尿酸 (Uric Acid)</label>
-                <div class="input-group">
-                    <input type="number" name="uric_acid" placeholder="如：480">
-                    <span class="unit">μmol/L</span>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">5. 总胆固醇 (Total Cholesterol)</label>
-                <div class="input-group">
-                    <input type="number" step="0.01" name="total_cholesterol" placeholder="如：5.8">
-                    <span class="unit">mmol/L</span>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">6. 低密度脂蛋白 (LDL - 坏胆固醇)</label>
-                <div class="input-group">
-                    <input type="number" step="0.01" name="ldl" placeholder="如：3.6">
-                    <span class="unit">mmol/L</span>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">7. 身高与体重</label>
-                <div class="input-group" style="margin-bottom:0.5rem">
-                    <input type="number" name="height" placeholder="身高">
-                    <span class="unit">cm</span>
-                </div>
-                <div class="input-group">
-                    <input type="number" step="0.1" name="weight" placeholder="体重">
-                    <span class="unit">kg</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 2: Medications & Supplements -->
-        <div class="section">
-            <div class="section-title">第二部分：用药与保健品</div>
-            
-            <div class="question">
-                <label class="q-label">8. 目前在吃什么处方药？（可多选）</label>
-                <div class="options-group">
-                    <label class="option-label">
-                        <input type="checkbox" name="meds" value="降糖药">
-                        <span>降糖药 (如二甲双胍等)</span>
-                    </label>
-                    <input type="text" class="other-input" id="meds-sugar-name" placeholder="请写药名（若记得）">
-
-                    <label class="option-label">
-                        <input type="checkbox" name="meds" value="降脂药">
-                        <span>降脂药 (如他汀类等)</span>
-                    </label>
-                    <input type="text" class="other-input" id="meds-lipid-name" placeholder="请写药名（若记得）">
-
-                    <label class="option-label">
-                        <input type="checkbox" name="meds" value="降尿酸药">
-                        <span>降尿酸药 (如非布司他等)</span>
-                    </label>
-                    <input type="text" class="other-input" id="meds-gout-name" placeholder="请写药名（若记得）">
-
-                    <label class="option-label">
-                        <input type="checkbox" name="meds" value="降压药">
-                        <span>降压药</span>
-                    </label>
-
-                    <label class="option-label">
-                        <input type="checkbox" name="meds" value="无处方药">
-                        <span>没有吃处方药，只靠自己注意</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">9. 目前在吃什么保健品？</label>
-                <span class="help-text">请列出目前在吃的，比如鱼油、护肝片等</span>
-                <textarea name="supplements" rows="2" placeholder="填写保健品名称..."></textarea>
-            </div>
-        </div>
-
-        <!-- Section 3: Daily Symptoms -->
-        <div class="section">
-            <div class="section-title">第三部分：日常症状与感受</div>
-
-            <div class="question">
-                <label class="q-label">10. 眼睛视力问题（可多选）</label>
-                <div class="options-group">
-                    <label class="option-label"><input type="checkbox" name="vision" value="看近处模糊"> 看近处的字非常模糊 (老花)</label>
-                    <label class="option-label"><input type="checkbox" name="vision" value="看远处模糊"> 看远处的物体也看不清</label>
-                    <label class="option-label"><input type="checkbox" name="vision" value="近期加重"> 视力下降是最近半年到一年突然加重的</label>
-                    <label class="option-label"><input type="checkbox" name="vision" value="查过眼底"> 之前去医院专门查过眼底 (糖尿病视网膜病变筛查)</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">11. 疲劳与睡眠（可多选）</label>
-                <div class="options-group">
-                    <label class="option-label"><input type="checkbox" name="sleep" value="下班极度疲倦"> 每天下班回家觉得非常疲倦，没有精力</label>
-                    <label class="option-label"><input type="checkbox" name="sleep" value="入睡困难"> 晚上入睡困难</label>
-                    <label class="option-label"><input type="checkbox" name="sleep" value="半夜易醒"> 半夜容易醒，醒了就很难再睡着</label>
-                    <label class="option-label"><input type="checkbox" name="sleep" value="早起没精神"> 早上起来还是觉得没睡够、没精神</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">12. 肠胃与痛风</label>
-                <div class="options-group" style="margin-bottom:1rem">
-                    <label class="option-label"><input type="checkbox" name="stomach" value="反酸烧心"> 经常觉得反酸、烧心、胃痛</label>
-                    <label class="option-label"><input type="checkbox" name="stomach" value="吃油腻拉肚子"> 稍微吃点凉的或油腻的，肚子就不舒服/拉肚子</label>
-                </div>
-                <span class="help-text">关于痛风/尿酸：</span>
-                <div class="options-group">
-                    <label class="option-label"><input type="radio" name="gout" value="偶尔发作"> 偶尔会有尿酸高导致的关节红肿疼痛</label>
-                    <input type="text" class="other-input" id="gout-date" placeholder="最近一次发作是几个月前？">
-                    <label class="option-label"><input type="radio" name="gout" value="无发作仅指标高"> 没有明显的痛风发作，只是体检尿酸高</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 4: Diet & Snacks -->
-        <div class="section">
-            <div class="section-title">第四部分：饮食与零食习惯</div>
-
-            <div class="question">
-                <label class="q-label">13. 看电视时的坚果消耗（单选）</label>
-                <div class="options-group">
-                    <label class="option-label"><input type="radio" name="nuts" value="每天吃大量"> 每天都吃，一次能吃一大把甚至半罐 (量不受控)</label>
-                    <label class="option-label"><input type="radio" name="nuts" value="偶尔吃点"> 偶尔吃一点解解馋</label>
-                    <label class="option-label"><input type="radio" name="nuts" value="基本不吃"> 基本不怎么吃</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">14. 夜宵习惯（可多选）</label>
-                <div class="options-group">
-                    <label class="option-label"><input type="checkbox" name="nightsnack" value="睡前觉得饿"> 晚上睡前经常觉得饿</label>
-                    <label class="option-label"><input type="checkbox" name="nightsnack" value="饿了吃碳水主食"> 饿了习惯吃面条、粥等碳水主食</label>
-                    <label class="option-label"><input type="checkbox" name="nightsnack" value="饿了吃肉菜"> 饿了习惯吃点剩下的肉菜</label>
-                    <label class="option-label"><input type="checkbox" name="nightsnack" value="饿了吃零食饼干"> 饿了习惯吃点零食饼干</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <label class="q-label">15. 水分与饮酒（单选）</label>
-                <span class="help-text">喝水习惯：</span>
-                <div class="options-group" style="margin-bottom:1rem">
-                    <label class="option-label"><input type="radio" name="water" value="喝水多"> 每天喝白开水/淡茶挺多的</label>
-                    <label class="option-label"><input type="radio" name="water" value="喝水少"> 不怎么爱喝水，想起来才喝两口</label>
-                    <label class="option-label"><input type="radio" name="water" value="喜欢甜饮料"> 喜欢喝带甜味的饮料或果汁</label>
-                </div>
-                <span class="help-text">饮酒习惯：</span>
-                <div class="options-group">
-                    <label class="option-label"><input type="radio" name="alcohol" value="滴酒不沾"> 基本上滴酒不沾</label>
-                    <label class="option-label"><input type="radio" name="alcohol" value="偶尔聚会喝"> 偶尔聚会喝一点</label>
-                    <label class="option-label"><input type="radio" name="alcohol" value="平时也喝"> 平时在家里吃饭也习惯喝点小酒 (如啤酒、白酒)</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">附加留言</div>
-            <div class="question">
-                <label class="q-label">关于爸的身体和饮食，你觉得还有什么是比较头疼、需要我帮忙想办法的？</label>
-                <textarea name="extra_notes" rows="3" placeholder="写点什么..."></textarea>
-            </div>
-        </div>
-
-        <button type="button" class="btn-submit" onclick="generateResult()">生成结果并复制给 Chevis</button>
-    </form>
-
-    <div id="result-area">
-        <div style="font-weight:600; margin-bottom:1rem;">请复制下方文本，发微信给 Chevis：</div>
-        <textarea id="result-text" readonly></textarea>
-        <button type="button" class="btn-copy" onclick="copyResult()">复制文本</button>
-    </div>
-
+<!-- Header -->
+<div class="header">
+  <img class="header-photo" src="family-photo-2018.jpg" alt="全家福">
+  <div class="header-overlay"></div>
+  <a class="back-link" href="index.html">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    返回档案
+  </a>
+  <div class="header-content">
+    <div class="header-period">综合基线采集 · 2026年6月</div>
+    <h1>爸爸综合健康基线采集表</h1>
+    <p class="header-subtitle">这是爸爸的表格，妈妈也可以帮忙填</p>
+    <p class="header-subtitle">不知道的可以跳过，不用全部填完</p>
+  </div>
+  <span class="header-caption">2018 · 港珠澳大桥</span>
 </div>
 
+<!-- 体检报告 Banner -->
+<div class="exam-banner">
+  <span class="exam-banner-icon">📸</span>
+  <span class="exam-banner-text">填表之前，先把最近的体检报告拍照发给宸宸哦</span>
+</div>
+
+
+<!-- ═══ Section 1: 近期体检核心指标 ═══ -->
+<div class="section">
+  <div class="section-header">① 近期体检核心指标</div>
+  <div class="section-body">
+    <p class="section-note">请参考爸单位最近一次的体检报告</p>
+
+    <div class="field">
+      <label class="field-label">体检时间</label>
+      <input type="text" name="checkup_date" placeholder="如：2026年3月">
+    </div>
+
+    <div class="field">
+      <label class="field-label">空腹血糖 (Fasting Glucose)</label>
+      <div class="input-unit-wrapper">
+        <input type="number" step="0.01" name="fasting_glucose" placeholder="如：6.5">
+        <span class="input-unit">mmol/L</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">糖化血红蛋白 (HbA1c)</label>
+      <div class="input-unit-wrapper">
+        <input type="number" step="0.1" name="hba1c" placeholder="如：7.0">
+        <span class="input-unit">%</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">尿酸 (Uric Acid)</label>
+      <div class="input-unit-wrapper">
+        <input type="number" name="uric_acid" placeholder="如：480">
+        <span class="input-unit">μmol/L</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">总胆固醇 (Total Cholesterol)</label>
+      <div class="input-unit-wrapper">
+        <input type="number" step="0.01" name="total_cholesterol" placeholder="如：5.8">
+        <span class="input-unit">mmol/L</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">低密度脂蛋白 (LDL - 坏胆固醇)</label>
+      <div class="input-unit-wrapper">
+        <input type="number" step="0.01" name="ldl" placeholder="如：3.6">
+        <span class="input-unit">mmol/L</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">身高与体重</label>
+      <div class="input-row">
+        <div class="input-unit-wrapper">
+          <input type="number" name="height" placeholder="身高">
+          <span class="input-unit">cm</span>
+        </div>
+        <div class="input-unit-wrapper">
+          <input type="number" step="0.1" name="weight" placeholder="体重">
+          <span class="input-unit">kg</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section 2: 用药与保健品 ═══ -->
+<div class="section">
+  <div class="section-header">② 用药与保健品</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">目前在吃什么处方药？（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="med-sugar" name="meds" value="降糖药"
+                 data-expands="sub-med-sugar" onchange="handleChipExpand(this)">
+          <label for="med-sugar" class="chip-label">降糖药 (如二甲双胍)</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="med-lipid" name="meds" value="降脂药"
+                 data-expands="sub-med-lipid" onchange="handleChipExpand(this)">
+          <label for="med-lipid" class="chip-label">降脂药 (如他汀类)</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="med-gout" name="meds" value="降尿酸药"
+                 data-expands="sub-med-gout" onchange="handleChipExpand(this)">
+          <label for="med-gout" class="chip-label">降尿酸药 (如非布司他)</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="med-bp" name="meds" value="降压药">
+          <label for="med-bp" class="chip-label">降压药</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="med-none" name="meds" value="无处方药">
+          <label for="med-none" class="chip-label">没有吃处方药</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-med-sugar" class="sub-card-wrapper">
+      <div class="sub-card">
+        <input type="text" name="med_sugar_name" placeholder="降糖药名称（若记得）">
+      </div>
+    </div>
+
+    <div id="sub-med-lipid" class="sub-card-wrapper">
+      <div class="sub-card">
+        <input type="text" name="med_lipid_name" placeholder="降脂药名称（若记得）">
+      </div>
+    </div>
+
+    <div id="sub-med-gout" class="sub-card-wrapper">
+      <div class="sub-card">
+        <input type="text" name="med_gout_name" placeholder="降尿酸药名称（若记得）">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">目前在吃什么保健品？</label>
+      <p class="section-note">请列出目前在吃的，比如鱼油、护肝片等</p>
+      <textarea name="supplements" rows="2" placeholder="填写保健品名称..."></textarea>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section 3: 日常症状与感受 ═══ -->
+<div class="section">
+  <div class="section-header">③ 日常症状与感受</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">眼睛视力问题（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="vis-near" name="vision" value="看近处模糊">
+          <label for="vis-near" class="chip-label">看近处的字模糊 (老花)</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="vis-far" name="vision" value="看远处模糊">
+          <label for="vis-far" class="chip-label">看远处也看不清</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="vis-worse" name="vision" value="近期加重">
+          <label for="vis-worse" class="chip-label">最近半年突然加重</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="vis-exam" name="vision" value="查过眼底">
+          <label for="vis-exam" class="chip-label">专门查过眼底</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">疲劳与睡眠（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="slp-tired" name="sleep" value="下班极度疲倦">
+          <label for="slp-tired" class="chip-label">下班非常疲倦</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="slp-onset" name="sleep" value="入睡困难">
+          <label for="slp-onset" class="chip-label">入睡困难</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="slp-wake" name="sleep" value="半夜易醒">
+          <label for="slp-wake" class="chip-label">半夜容易醒</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="slp-morn" name="sleep" value="早起没精神">
+          <label for="slp-morn" class="chip-label">早起没精神</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">肠胃（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="sto-reflux" name="stomach" value="反酸烧心">
+          <label for="sto-reflux" class="chip-label">反酸、烧心、胃痛</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="sto-diarrhea" name="stomach" value="吃油腻拉肚子">
+          <label for="sto-diarrhea" class="chip-label">吃凉的或油腻的拉肚子</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">痛风/尿酸情况（单选）</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="gout-occ" name="gout" value="偶尔发作"
+                 data-expands="sub-gout-date" onchange="handleRadioExpand(this, 'gout')">
+          <label for="gout-occ" class="radio-label">偶尔关节红肿疼痛</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="gout-lab" name="gout" value="无发作仅指标高"
+                 data-expands="" onchange="handleRadioExpand(this, 'gout')">
+          <label for="gout-lab" class="radio-label">没有痛风发作，只是指标高</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-gout-date" class="sub-card-wrapper">
+      <div class="sub-card">
+        <input type="text" name="gout_last_date" placeholder="最近一次发作大概几个月前？">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section 4: 饮食与零食习惯 ═══ -->
+<div class="section">
+  <div class="section-header">④ 饮食与零食习惯</div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">看电视时的坚果消耗（单选）</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="nuts-heavy" name="nuts" value="每天吃大量">
+          <label for="nuts-heavy" class="radio-label">每天一大把甚至半罐</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="nuts-some" name="nuts" value="偶尔吃点">
+          <label for="nuts-some" class="radio-label">偶尔吃一点</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="nuts-no" name="nuts" value="基本不吃">
+          <label for="nuts-no" class="radio-label">基本不吃</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">夜宵习惯（可多选）</label>
+      <div class="chip-group">
+        <div class="chip-item">
+          <input type="checkbox" id="ns-hungry" name="nightsnack" value="睡前觉得饿">
+          <label for="ns-hungry" class="chip-label">睡前经常饿</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="ns-carb" name="nightsnack" value="饿了吃碳水主食">
+          <label for="ns-carb" class="chip-label">吃面条、粥等碳水</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="ns-meat" name="nightsnack" value="饿了吃肉菜">
+          <label for="ns-meat" class="chip-label">吃剩下的肉菜</label>
+        </div>
+        <div class="chip-item">
+          <input type="checkbox" id="ns-snack" name="nightsnack" value="饿了吃零食饼干">
+          <label for="ns-snack" class="chip-label">吃零食饼干</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">喝水习惯（单选）</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="water-lots" name="water" value="喝水多">
+          <label for="water-lots" class="radio-label">每天喝白开水/淡茶挺多</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="water-few" name="water" value="喝水少">
+          <label for="water-few" class="radio-label">不爱喝水，想起来才喝</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="water-sweet" name="water" value="喜欢甜饮料">
+          <label for="water-sweet" class="radio-label">喜欢甜饮料或果汁</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">饮酒习惯（单选）</label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" id="alc-no" name="alcohol" value="滴酒不沾">
+          <label for="alc-no" class="radio-label">基本不喝</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="alc-social" name="alcohol" value="偶尔聚会喝">
+          <label for="alc-social" class="radio-label">偶尔聚会喝一点</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" id="alc-daily" name="alcohol" value="平时也喝">
+          <label for="alc-daily" class="radio-label">平时在家也习惯喝点</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ Section 5: 附加留言 ═══ -->
+<div class="section">
+  <div class="section-header">⑤ 附加留言</div>
+  <div class="section-body">
+    <div class="field">
+      <label class="field-label">关于爸的身体和饮食，你觉得还有什么是比较头疼、需要宸宸帮忙想办法的？</label>
+      <textarea name="extra_notes" rows="3" placeholder="写点什么..."></textarea>
+    </div>
+  </div>
+</div>
+
+
+<!-- 小贴士 -->
+<div class="tips-section">
+  <span class="tips-icon">🌱</span>
+  <span class="tips-text">遇到不确定的数字可以先跳过，找到体检报告后再补也来得及</span>
+</div>
+
+<!-- Copy -->
+<div class="copy-section">
+  <button class="btn-copy" onclick="copyResults()">复制结果，发给宸宸</button>
+  <p class="copy-hint">点击后自动复制，粘贴到微信发给宸宸就好</p>
+</div>
+
+<button class="btn-clear" onclick="clearForm()">清除已填内容</button>
+
+<div class="toast" id="toast">已复制！粘贴到微信发给宸宸</div>
+
 <script>
-    // Style interactions
-    document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
-        input.addEventListener('change', function() {
-            if(this.type === 'radio') {
-                const name = this.name;
-                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-                    r.closest('.option-label').classList.remove('selected');
-                });
-            }
-            if(this.checked) {
-                this.closest('.option-label').classList.add('selected');
-            } else {
-                this.closest('.option-label').classList.remove('selected');
-            }
-        });
+var FORM_ID = 'dad-comprehensive-004';
+var FORM_PERSON = 'dad';
+
+// ─── localStorage ────────────────────────────────────────
+function saveState() {
+  var state = {};
+  document.querySelectorAll('input[type="radio"]').forEach(function(el) {
+    if (el.checked && el.name) state['r:' + el.name] = el.value;
+  });
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+    if (el.id) state['c:' + el.id] = el.checked;
+  });
+  document.querySelectorAll('input[type="text"], input[type="number"]').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key) state['i:' + key] = el.value;
+  });
+  document.querySelectorAll('textarea').forEach(function(el) {
+    if (el.name) state['t:' + el.name] = el.value;
+  });
+  try { localStorage.setItem(FORM_ID, JSON.stringify(state)); } catch(e) {}
+}
+
+function restoreState() {
+  var state;
+  try { state = JSON.parse(localStorage.getItem(FORM_ID)); } catch(e) {}
+  if (!state) return;
+
+  document.querySelectorAll('input[type="radio"]').forEach(function(el) {
+    if (el.name && state['r:' + el.name] === el.value) {
+      el.checked = true;
+      if (el.dataset.expands !== undefined) handleRadioExpand(el, el.name, true);
+    }
+  });
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+    if (el.id && state['c:' + el.id]) {
+      el.checked = true;
+      if (el.dataset.expands) openSubCard(el.dataset.expands);
+    }
+  });
+  document.querySelectorAll('input[type="text"], input[type="number"]').forEach(function(el) {
+    var key = el.name || el.id;
+    if (key && state['i:' + key] !== undefined) el.value = state['i:' + key];
+  });
+  document.querySelectorAll('textarea').forEach(function(el) {
+    if (el.name && state['t:' + el.name] !== undefined) el.value = state['t:' + el.name];
+  });
+}
+
+function clearForm() {
+  if (!confirm('确定要清除所有已填内容吗？')) return;
+  try { localStorage.removeItem(FORM_ID); } catch(e) {}
+  location.reload();
+}
+
+document.addEventListener('change', saveState);
+document.addEventListener('input', saveState);
+
+// ─── Conditional expansion ───────────────────────────────
+function openSubCard(id) {
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+
+function closeSubCard(id) {
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('open');
+  el.querySelectorAll('input[type="text"], input[type="number"]').forEach(function(i) { i.value = ''; });
+}
+
+function handleChipExpand(checkbox) {
+  if (!checkbox.dataset.expands) return;
+  checkbox.checked ? openSubCard(checkbox.dataset.expands) : closeSubCard(checkbox.dataset.expands);
+}
+
+function handleRadioExpand(radio, radioName, silent) {
+  var toOpen = (radio.checked && radio.dataset.expands) ? radio.dataset.expands : null;
+  document.querySelectorAll('input[name="' + radioName + '"][data-expands]').forEach(function(r) {
+    if (!r.checked && r.dataset.expands && r.dataset.expands !== toOpen) {
+      closeSubCard(r.dataset.expands);
+    }
+  });
+  if (toOpen) openSubCard(toOpen);
+  if (!toOpen) {
+    document.querySelectorAll('input[name="' + radioName + '"][data-expands]').forEach(function(r) {
+      if (r.dataset.expands) closeSubCard(r.dataset.expands);
     });
+  }
+}
 
-    function getVal(name) {
-        return document.querySelector(`input[name="${name}"]`)?.value || '未填';
+// ─── Copy output ─────────────────────────────────────────
+function collectFormData() {
+  var data = { _meta: {} };
+  var now = new Date();
+  data._meta.form_id = FORM_ID;
+  data._meta.person = FORM_PERSON;
+  data._meta.submitted = now.toISOString().slice(0, 10);
+
+  document.querySelectorAll('input[type="radio"]:checked').forEach(function(el) {
+    if (el.name) data[el.name] = el.value;
+  });
+  document.querySelectorAll('input[type="checkbox"][name]').forEach(function(el) {
+    if (!data[el.name]) data[el.name] = [];
+    if (el.checked) data[el.name].push(el.value);
+  });
+  document.querySelectorAll('input[type="text"][name], input[type="number"][name]').forEach(function(el) {
+    if (el.value !== '') data[el.name] = el.value;
+  });
+  document.querySelectorAll('textarea[name]').forEach(function(el) {
+    if (el.value !== '') data[el.name] = el.value;
+  });
+  return data;
+}
+
+function buildPlainText(data) {
+  var now = new Date();
+  var lines = [
+    '📋 爸爸健康基线采集  ' + now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日',
+    '填表人：爸爸（或妈妈代填）',
+    ''
+  ];
+
+  function add(label, key) {
+    var v = data[key];
+    if (v === undefined) return;
+    var val = Array.isArray(v) ? (v.length ? v.join('、') : '') : v;
+    if (!val) return;
+    lines.push(label + '：' + val);
+  }
+
+  lines.push('【体检指标】');
+  add('体检时间', 'checkup_date');
+  if (data.fasting_glucose) lines.push('空腹血糖：' + data.fasting_glucose + ' mmol/L');
+  if (data.hba1c) lines.push('糖化血红蛋白：' + data.hba1c + ' %');
+  if (data.uric_acid) lines.push('尿酸：' + data.uric_acid + ' μmol/L');
+  if (data.total_cholesterol) lines.push('总胆固醇：' + data.total_cholesterol + ' mmol/L');
+  if (data.ldl) lines.push('LDL(坏胆固醇)：' + data.ldl + ' mmol/L');
+  if (data.height) lines.push('身高：' + data.height + ' cm');
+  if (data.weight) lines.push('体重：' + data.weight + ' kg');
+  lines.push('');
+
+  lines.push('【用药与补剂】');
+  add('处方药', 'meds');
+  if (data.med_sugar_name) lines.push('  降糖药名：' + data.med_sugar_name);
+  if (data.med_lipid_name) lines.push('  降脂药名：' + data.med_lipid_name);
+  if (data.med_gout_name) lines.push('  降尿酸药名：' + data.med_gout_name);
+  add('保健品', 'supplements');
+  lines.push('');
+
+  lines.push('【症状与感受】');
+  add('视力问题', 'vision');
+  add('疲劳/睡眠', 'sleep');
+  add('肠胃状态', 'stomach');
+  var goutText = data.gout || '';
+  if (goutText === '偶尔发作' && data.gout_last_date) {
+    goutText += '（最近发作：' + data.gout_last_date + '）';
+  }
+  if (goutText) lines.push('痛风状况：' + goutText);
+  lines.push('');
+
+  lines.push('【饮食习惯】');
+  add('吃坚果频率', 'nuts');
+  add('夜宵习惯', 'nightsnack');
+  add('喝水习惯', 'water');
+  add('饮酒习惯', 'alcohol');
+  lines.push('');
+
+  lines.push('【补充留言】');
+  lines.push(data.extra_notes || '无');
+
+  return lines.join('\n');
+}
+
+function toYAML(obj, depth) {
+  depth = depth || 0;
+  var pad = '  '.repeat(depth);
+  var lines = [];
+  for (var k in obj) {
+    if (!obj.hasOwnProperty(k)) continue;
+    var v = obj[k];
+    if (Array.isArray(v)) {
+      if (v.length === 0) {
+        lines.push(pad + k + ': []');
+      } else {
+        lines.push(pad + k + ':');
+        v.forEach(function(item) { lines.push(pad + '  - ' + item); });
+      }
+    } else if (v !== null && typeof v === 'object') {
+      lines.push(pad + k + ':');
+      lines.push(toYAML(v, depth + 1));
+    } else {
+      var safe = (typeof v === 'string' && /[:#\[\]{}&*!|>'"%@`]/.test(v))
+        ? '"' + v.replace(/"/g, '\\"') + '"' : v;
+      lines.push(pad + k + ': ' + safe);
     }
+  }
+  return lines.join('\n');
+}
 
-    function getCheckedVals(name) {
-        const els = document.querySelectorAll(`input[name="${name}"]:checked`);
-        if(els.length === 0) return '无/未选';
-        return Array.from(els).map(e => e.value).join(', ');
-    }
+function copyResults() {
+  var data = collectFormData();
+  var plain = buildPlainText(data);
+  var yaml = toYAML(data);
+  var separator = '\n\n———— 以下是宸宸用的数据，不用管 ————\n\n';
+  var full = plain + separator + yaml;
 
-    function getRadioVal(name) {
-        const el = document.querySelector(`input[name="${name}"]:checked`);
-        return el ? el.value : '未选';
-    }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(full).then(showToast).catch(function() { fallbackCopy(full); });
+  } else {
+    fallbackCopy(full);
+  }
+}
 
-    function generateResult() {
-        const date = new Date().toISOString().split('T')[0];
-        
-        let medsDetails = [];
-        if(document.querySelector('input[value="降糖药"]').checked) medsDetails.push('降糖药: ' + document.getElementById('meds-sugar-name').value);
-        if(document.querySelector('input[value="降脂药"]').checked) medsDetails.push('降脂药: ' + document.getElementById('meds-lipid-name').value);
-        if(document.querySelector('input[value="降尿酸药"]').checked) medsDetails.push('降尿酸药: ' + document.getElementById('meds-gout-name').value);
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  showToast();
+}
 
-        let goutText = getRadioVal('gout');
-        if(goutText === '偶尔发作') goutText += ` (最近发作: ${document.getElementById('gout-date').value}个月前)`;
+function showToast() {
+  var t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
 
-        const result = `
-【爸爸健康基线采集】
-填写日期: ${date}
-
---- 体检指标 (${getVal('checkup_date')}) ---
-空腹血糖: ${getVal('fasting_glucose')} mmol/L
-糖化血红蛋白: ${getVal('hba1c')} %
-尿酸: ${getVal('uric_acid')} μmol/L
-总胆固醇: ${getVal('total_cholesterol')} mmol/L
-LDL(坏胆固醇): ${getVal('ldl')} mmol/L
-身高: ${getVal('height')} cm / 体重: ${getVal('weight')} kg
-
---- 用药与补剂 ---
-处方药: ${getCheckedVals('meds')}
-具体药名补充: ${medsDetails.length > 0 ? medsDetails.join(', ') : '无'}
-保健品: ${document.querySelector('textarea[name="supplements"]').value || '未填'}
-
---- 症状与感受 ---
-视力问题: ${getCheckedVals('vision')}
-疲劳/睡眠: ${getCheckedVals('sleep')}
-肠胃状态: ${getCheckedVals('stomach')}
-痛风状况: ${goutText}
-
---- 饮食习惯 ---
-吃坚果频率: ${getRadioVal('nuts')}
-夜宵习惯: ${getCheckedVals('nightsnack')}
-喝水习惯: ${getRadioVal('water')}
-饮酒习惯: ${getRadioVal('alcohol')}
-
---- 补充留言 ---
-${document.querySelector('textarea[name="extra_notes"]').value || '无'}
-        `.trim();
-
-        document.getElementById('result-text').value = result;
-        document.getElementById('result-area').style.display = 'block';
-        
-        // Scroll to result
-        document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
-    }
-
-    function copyResult() {
-        const text = document.getElementById('result-text');
-        text.select();
-        document.execCommand('copy');
-        const btn = document.querySelector('.btn-copy');
-        btn.textContent = '已复制，请去微信粘贴！';
-        btn.classList.add('copied');
-        setTimeout(() => {
-            btn.textContent = '复制文本';
-            btn.classList.remove('copied');
-        }, 3000);
-    }
+// ─── Init ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  restoreState();
+});
 </script>
+
 </body>
 </html>
